@@ -1776,12 +1776,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     width: 200px;
     padding: 90px;
 }
-/*Adaptable theme buttons*/
-.format-tiles .btn:hover,
-.format-tiles .btn:active,
-.format-tiles .btn.progresshelp {
-    background: inherit;
-}
 
 .format-tiles .course-content ul.tiles .tile.phototile {
     padding: 0;
