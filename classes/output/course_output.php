@@ -600,13 +600,16 @@ class course_output implements \renderable, \templatable
         }
         $data['section_zero_add_cm_control_html'] = $this->courserenderer->course_section_add_cm_control($this->course, 0, 0);
         if ($this->completionenabled && $data['overall_progress']['num_out_of'] > 0) {
-            $data['overall_progress_indicator'] = $this->completion_indicator(
-                $data['overall_progress']['num_complete'],
-                $data['overall_progress']['num_out_of'],
-                true,
-                true
-            );
-            $data['overall_progress_indicator']['tileid'] = 0;
+            if (get_config('format_tiles', 'showoverallprogress')) {
+                $data['overall_progress_indicator'] = $this->completion_indicator(
+                    $data['overall_progress']['num_complete'],
+                    $data['overall_progress']['num_out_of'],
+                    true,
+                    true
+                );
+                $data['overall_progress_indicator']['tileid'] = 0;
+            }
+
 
             // If completion tracking is on but nothing to track at activity level, display help to teacher.
             if ($this->isediting && $data['overall_progress']['num_out_of'] == 0) {
