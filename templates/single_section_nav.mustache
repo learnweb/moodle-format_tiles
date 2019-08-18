@@ -44,7 +44,6 @@
         "next_tile_id": 5
         }
 }}
-
 <div class="navigation-arrows">
     {{#previous_tile_id}}
         <a class="navigation-arrow"
@@ -54,14 +53,16 @@
     {{/previous_tile_id}}
     {{^previous_tile_id}}
         <span class="navigation-arrow dimmed">
-            {{#pix}}chevron-left, format_tiles, {{#str}}previoustopic, format_tiles{{/str}}{{/pix}}
+            <span class="dir-rtl-hide">{{#pix}}chevron-left, format_tiles, {{#str}}previoustopic, format_tiles{{/str}}{{/pix}}</span>
+            <span class="dir-ltr-hide">{{#pix}}chevron-right, format_tiles, {{#str}}previoustopic, format_tiles{{/str}}{{/pix}}</span>
         </span>
     {{/previous_tile_id}}
 
     {{#next_tile_id}}
         <a class="navigation-arrow"
            href="{{{ config.wwwroot }}}/course/view.php?id={{courseid}}&section={{next_tile_id}}&singlesec={{next_tile_id}}">
-            {{#pix}}chevron-right, format_tiles, {{#str}}nexttopic, format_tiles{{/str}}{{/pix}}
+            <span class="dir-rtl-hide">{{#pix}}chevron-right, format_tiles, {{#str}}nexttopic, format_tiles{{/str}}{{/pix}}</span>
+            <span class="dir-ltr-hide">{{#pix}}chevron-left, format_tiles, {{#str}}nexttopic, format_tiles{{/str}}{{/pix}}</span>
         </a>
     {{/next_tile_id}}
     {{^next_tile_id}}
