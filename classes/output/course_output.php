@@ -1058,7 +1058,11 @@ class course_output implements \renderable, \templatable
             }
         }
 
-        if ($mod->modname === 'url' || $mod->modname === 'resource') {
+        if (
+            ($mod->modname === 'url' || $mod->modname === 'resource')
+            && $this->devicetype != \core_useragent::DEVICETYPE_TABLET
+            && $this->devicetype != \core_useragent::DEVICETYPE_MOBILE
+        ) {
             // If the non JS link is used, it redirects from /mod/xxx/view.php to external or pluginURL.
             $moduleobject['url'] .= '&redirect=1';
         }
