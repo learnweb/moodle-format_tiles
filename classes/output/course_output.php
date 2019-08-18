@@ -610,7 +610,6 @@ class course_output implements \renderable, \templatable
                 $data['overall_progress_indicator']['tileid'] = 0;
             }
 
-
             // If completion tracking is on but nothing to track at activity level, display help to teacher.
             if ($this->isediting && $data['overall_progress']['num_out_of'] == 0) {
                 $bulklink = \html_writer::link(
