@@ -215,6 +215,8 @@ class course_output implements \renderable, \templatable
         foreach ($this->courseformatoptions as $k => $v) {
             $data[$k] = $v;
         }
+        // RTL support for nav arrows direction (Arabic/ Hebrew).
+        $data['is-rtl'] = right_to_left();
         return $data;
     }
 
