@@ -132,7 +132,13 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
         )).done(function (html) {
             // Need to repeat jquery selector as it is being replaced (replacwith).
             tileProgressIndicator.replaceWith(html);
-            $("#tileprogress-" + sectionNum).tooltip();
+            try {
+                $("#tileprogress-" + sectionNum).tooltip();
+            } catch (err) {
+                require(["core/log"], function(log) {
+                    log.debug(err);
+                });
+            }
         });
 
         // Render and replace the *overall* progress indicator for the *whole course*.
@@ -163,7 +169,13 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
             fromajax: 1,
             sesskey: config.sesskey
         };
-        form.tooltip('hide');
+        try {
+            form.tooltip('hide');
+        } catch (err) {
+            require(["core/log"], function(log) {
+                log.debug(err);
+            });
+        }
         var url = config.wwwroot + "/course/togglecompletion.php";
         $.post(url, data, function (returnData, status) {
             if (status === "success" && returnData === "OK") {
@@ -227,7 +239,13 @@ define(["jquery", "core/templates", "core/config", "format_tiles/completion"], f
                 completionIcon.addClass(Icon.completionYes).removeClass(Icon.completionNo);
                 parent.attr('data-completionstate', 1);
                 parent.attr('data-original-title', strings.completeauto);
-                parent.tooltip();
+                try {
+                    parent.tooltip();
+                } catch (err) {
+                    require(["core/log"], function(log) {
+                        log.debug(err);
+                    });
+                }
                 changeProgressIndicators(sectionNum, $("#tileprogress-" + sectionNum), 1);
             }
         }
