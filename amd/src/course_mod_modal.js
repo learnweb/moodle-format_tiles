@@ -333,7 +333,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 }
 
                 // Align the iframe in the centre of the modal.
-                modalBody.css("text-align", "center");
+                // modalBody.css("text-align", "center");
 
                 stopAllVideosOnDismiss(modalRoot);
             });
