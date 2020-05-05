@@ -1257,7 +1257,13 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     /* stylelint-disable-next-line declaration-no-important */
     opacity: 1 !important;
 }
-
+.format-tiles li.activity.subtile:hover {
+    background-repeat: no-repeat;
+    background-position: 50% 70%;
+}
+.format-tiles .course-content .section .activity:hover {
+    background-color: #f9f9f9;
+}
 .format-tiles .subtile_inner,
 .format-tiles .fullwidth {
     width: 100%;
