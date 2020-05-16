@@ -117,7 +117,7 @@ class course_output implements \renderable, \templatable
     /**
      * @var mixed
      */
-    private $courseformatoptions;
+    public $courseformatoptions;
 
     /**
      * @var mixed
@@ -508,10 +508,7 @@ class course_output implements \renderable, \templatable
                 // Include completion tracking data for each tile (if used).
                 if ($section->visible && $this->completionenabled) {
                     if (isset($this->modinfo->sections[$sectionnum])) {
-                        $completionthistile = $this->section_progress(
-                            $this->modinfo->sections[$sectionnum],
-                            $this->modinfo->cms, $this->completioninfo
-                        );
+                        $completionthistile = $this->section_progress($this->modinfo->sections[$sectionnum], $this->modinfo->cms);
                         // Keep track of overall progress so we can show this too - add this tile's completion to the totals.
                         $data['overall_progress']['num_out_of'] += $completionthistile['outof'];
                         $data['overall_progress']['num_complete'] += $completionthistile['completed'];
@@ -558,10 +555,7 @@ class course_output implements \renderable, \templatable
                 // Add in section zero completion data to overall completion count.
                 if ($section->visible && $this->completionenabled) {
                     if (isset($this->modinfo->sections[$sectionnum])) {
-                        $completionthistile = $this->section_progress(
-                            $this->modinfo->sections[$sectionnum],
-                            $this->modinfo->cms, $this->completioninfo
-                        );
+                        $completionthistile = $this->section_progress($this->modinfo->sections[$sectionnum], $this->modinfo->cms);
                         // Keep track of overall progress so we can show this too - add this tile's completion to the totals.
                         $data['overall_progress']['num_out_of'] += $completionthistile['outof'];
                         $data['overall_progress']['num_complete'] += $completionthistile['completed'];
@@ -639,7 +633,7 @@ class course_output implements \renderable, \templatable
      * @param array $coursecms the course module objects for this course
      * @return array with the completion data x items complete out of y
      */
-    private function section_progress($sectioncmids, $coursecms) {
+    public function section_progress($sectioncmids, $coursecms) {
         $completed = 0;
         $outof = 0;
         foreach ($sectioncmids as $cmid) {
@@ -1239,7 +1233,7 @@ class course_output implements \renderable, \templatable
      * @param boolean $isoverall whether this is an overall course completion indicator
      * @return array data for output template
      */
-    private function completion_indicator($numcomplete, $numoutof, $aspercent, $isoverall) {
+    public function completion_indicator($numcomplete, $numoutof, $aspercent, $isoverall) {
         $percentcomplete = $numoutof == 0 ? 0 : round(($numcomplete / $numoutof) * 100, 0);
         $progressdata = array(
             'numComplete' => $numcomplete,

@@ -271,7 +271,7 @@ class format_tiles_external extends external_api
                 'courseid' => new external_value(PARAM_INT, 'Course id whose icon/image we are setting'),
                 'sectionid' => new external_value(
                     PARAM_INT,
-                    'Section id whose icon/imasge we are setting (zero means whole course not just one section)'
+                    'Section id whose icon/image we are setting (zero means whole course not just one section)'
                 ),
                 'image' => new external_value(PARAM_RAW, 'File name for the image picked'),
                 'imagetype' => new external_value(PARAM_RAW, 'Image type for image picked (tileicon, tilephoto, draftfile)'),
@@ -763,6 +763,154 @@ class format_tiles_external extends external_api
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success')
+            )
+        );
+    }
+
+    /**
+     * Return some information about a section or a set of sections in a course.
+     * This may be called as a user progresses through course activities (with course completion).
+     * The data provided enable the tiles to be updated client side with progress info ana availability.
+     * @param int $courseid
+     * @param array $sectionnums
+     * @return array of warnings and status result
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws restricted_context_exception
+     * @since Moodle 3.8
+     */
+    public static function get_section_information($courseid, $sectionnums) {
+        global $PAGE, $SESSION;
+        $params = self::validate_parameters(
+            self::get_section_information_parameters(),
+            array(
+                'courseid' => $courseid,
+                'sectionnums' => $sectionnums,
+            )
+        );
+
+        // Request and permission validation.
+        // Ensure user has access to course context.
+        // validate_context() below ends up calling require_login($courseid).
+        $context = context_course::instance($params['courseid']);
+        self::validate_context($context);
+
+        $sections = [];
+        $warnings = [];
+
+        $course = get_course($params['courseid']);
+        $modinfo = get_fast_modinfo($course);
+        $sectioninfo = $modinfo->get_section_info_all();
+        $canviewhidden = has_capability('moodle/course:viewhiddensections', $context);
+        $renderer = $PAGE->get_renderer('format_tiles');
+        $templateable = new \format_tiles\output\course_output($course, true, $params['sectionid']);
+        $showprogressaspercent = $templateable->courseformatoptions['courseshowtileprogress'] == 2;
+        // First add the info about the section and its availability.
+        foreach ($sectionnums as $sectionnum) {
+            if (isset($sectioninfo[$sectionnum]) && ($sectioninfo[$sectionnum]->visible || $canviewhidden)) {
+                $section = $sectioninfo[$sectionnum];
+                $sections[$sectionnum] = array(
+                    'sectionid' => $section->id,
+                    'sectionnum' => $sectionnum,
+                    'is_available' => $section->available,
+                    'is_clickable' => $section->available || $section->uservisible,
+                    'availability_message' => $renderer->section_availability_message($section, $canviewhidden),
+                    'numcomplete' => -1, // If we have data, we replace this below.
+                    'numoutof' => -1 // If we have data, we replace this below.
+                );
+            } else {
+                $warnings[] = array(
+                    'item' => $sectionnum,
+                    'warningcode' => 'errorrequestnotfound',
+                    'message' => 'No section information available to user for section number ' . $sectionnum
+                );
+            }
+        }
+
+        // Next, if completion is enabled, add info about this user's progress.
+        $completionenabled = $course->enablecompletion && !isguestuser();
+        if ($completionenabled) {
+            foreach ($sections as $section) {
+                $completionthistile = $templateable->section_progress(
+                    $modinfo->sections[$section['sectionnum']],
+                    $modinfo->cms
+                );
+                $completiondata = $templateable->completion_indicator(
+                    $completionthistile['completed'],
+                    $completionthistile['outof'],
+                    $showprogressaspercent,
+                    false
+                );
+                foreach ($completiondata as $k => $v) {
+                    // Add percent, percentcircumf, percentoffset, issingledigit.
+                    $sections[$section['sectionnum']][strtolower($k)] = $v;
+                }
+            }
+        }
+        return array(
+            'sections' => array_values($sections),
+            'status' => true,
+            'warnings' => $warnings
+        );
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     * @since Moodle 3.8
+     */
+    public static function get_section_information_parameters() {
+        return new external_function_parameters(
+            array(
+                'courseid' => new external_value(PARAM_INT, 'Course id'),
+                'sectionnums' => new external_multiple_structure(
+                    new external_value(PARAM_INT, 'Section number to get info for', VALUE_REQUIRED, null, NULL_ALLOWED),
+                    'Section numbers in this course to get info for',
+                    VALUE_REQUIRED,
+                    []
+                ),
+            )
+        );
+    }
+
+    /**
+     *
+     * Returns description of method result value
+     *
+     * @return external_description
+     * @since Moodle 3.8
+     */
+    public static function get_section_information_returns() {
+        return new external_single_structure(
+            array(
+                'sections' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'sectionid' => new external_value(PARAM_INT, 'Section id'),
+                            'sectionnum' => new external_value(PARAM_INT, 'Section number in course'),
+                            'numcomplete' => new external_value(
+                                PARAM_INT,
+                                'Number of activities completed in this section by this user'
+                            ),
+                            'numoutof' => new external_value(
+                                PARAM_INT,
+                                'Number of possible activities in this section for this user'
+                            ),
+                            'percent' => new external_value(PARAM_INT, 'Percent complete'),
+                            'percentcircumf' => new external_value(PARAM_FLOAT, 'Circumference of radial indicator'),
+                            'percentoffset' => new external_value(PARAM_INT, 'Percent offset for radial indicator'),
+                            'iscomplete' => new external_value(PARAM_BOOL, 'Is the section complete'),
+                            'is_available' => new external_value(PARAM_BOOL, 'Is the section available (not restricted)'),
+                            'is_clickable' => new external_value(PARAM_BOOL, 'Is the section clickable / expandable'),
+                            'availability_message' => new external_value(PARAM_RAW, 'If the section is restricted, explains why')
+                        )
+                    )
+                ),
+                'status' => new external_value(PARAM_BOOL, 'status: true if success'),
+                'warnings' => new external_warnings()
             )
         );
     }

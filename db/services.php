@@ -96,4 +96,14 @@ $functions = array (
         'loginrequired' => true,
         'capabilities' => '' // Enrolment check, not capability - see externallib.php.
     ),
+    'format_tiles_get_section_information' => array(
+        'classname'   => 'format_tiles_external',
+        'methodname'  => 'get_section_information',
+        'classpath'   => 'course/format/tiles/externallib.php',
+        'description' => 'Get information for a section including availability info to refresh tile info on progress',
+        'type'        => 'read',
+        'ajax'        => true,
+        'loginrequired' => true,
+        'capabilities' => '' // Enrolment check, not capability - see externallib.php.
+    ),
 );
