@@ -323,7 +323,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
 
                             // Finally change or re-render the availability message if necessary.
                             const availabilityInfoDiv = tile.find(Selector.availabilityinfo);
-                            if (availabilityInfoDiv.length > 0 && sec.isavailable) {
+                            if (availabilityInfoDiv.length > 0 && sec.isavailable && !sec.availabilitymessage) {
                                 // Display no message any more.
                                 availabilityInfoDiv.fadeOut();
                             } else if (!sec.isavailable && sec.availabilitymessage) {
