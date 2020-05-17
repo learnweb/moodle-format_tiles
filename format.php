@@ -116,6 +116,11 @@ if (!empty($displaysection)) {
 
 $allowedmodmodals = format_tiles_allowed_modal_modules();
 
+// Need to know if we are using H5P filter as this may mean that we don't want to preload next sections.
+// If we did, when section pre-loads, any H5P filter activities set to 'complete on view' are complete.
+// This applies even if section is not ultimately viewed at all.
+$usingh5pfilter = in_array('h5p', array_keys(filter_get_active_in_context($context)));
+
 $jsparams = array(
     'courseId' => $course->id,
     'useJSNav' => $usejsnav, // See also lib.php page_set_course().
@@ -130,7 +135,9 @@ $jsparams = array(
     'userId' => $USER->id,
     'fitTilesToWidth' => get_config('format_tiles', 'fittilestowidth')
         && !optional_param("skipcheck", 0, PARAM_INT)
-        && !isset($SESSION->format_tiles_skip_width_check)
+        && !isset($SESSION->format_tiles_skip_width_check),
+    'usingh5pfilter' => $usingh5pfilter,
+    'enablecompletion' => $course->enablecompletion
 );
 if (!$isediting) {
     // Initalise the main JS module for non editing users.

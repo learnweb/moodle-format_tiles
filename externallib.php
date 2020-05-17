@@ -782,7 +782,7 @@ class format_tiles_external extends external_api
      * @since Moodle 3.8
      */
     public static function get_section_information($courseid, $sectionnums) {
-        global $PAGE, $SESSION;
+        global $PAGE;
         $params = self::validate_parameters(
             self::get_section_information_parameters(),
             array(
@@ -814,9 +814,9 @@ class format_tiles_external extends external_api
                 $sections[$sectionnum] = array(
                     'sectionid' => $section->id,
                     'sectionnum' => $sectionnum,
-                    'is_available' => $section->available,
-                    'is_clickable' => $section->available || $section->uservisible,
-                    'availability_message' => $renderer->section_availability_message($section, $canviewhidden),
+                    'isavailable' => $section->available,
+                    'isclickable' => $section->available || $section->uservisible,
+                    'availabilitymessage' => $renderer->section_availability_message($section, $canviewhidden),
                     'numcomplete' => -1, // If we have data, we replace this below.
                     'numoutof' => -1 // If we have data, we replace this below.
                 );
@@ -903,9 +903,9 @@ class format_tiles_external extends external_api
                             'percentcircumf' => new external_value(PARAM_FLOAT, 'Circumference of radial indicator'),
                             'percentoffset' => new external_value(PARAM_INT, 'Percent offset for radial indicator'),
                             'iscomplete' => new external_value(PARAM_BOOL, 'Is the section complete'),
-                            'is_available' => new external_value(PARAM_BOOL, 'Is the section available (not restricted)'),
-                            'is_clickable' => new external_value(PARAM_BOOL, 'Is the section clickable / expandable'),
-                            'availability_message' => new external_value(PARAM_RAW, 'If the section is restricted, explains why')
+                            'isavailable' => new external_value(PARAM_BOOL, 'Is the section available (not restricted)'),
+                            'isclickable' => new external_value(PARAM_BOOL, 'Is the section clickable / expandable'),
+                            'availabilitymessage' => new external_value(PARAM_RAW, 'If the section is restricted, explains why')
                         )
                     )
                 ),
