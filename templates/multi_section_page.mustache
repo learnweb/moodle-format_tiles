@@ -54,20 +54,6 @@
 }}
 
 {{^from_ajax}}
-    {{#completionenabled}}
-    {{!
-     This value apparently tracks whether there has been a dynamic change to the page.
-     I copied it from the standard core page and included it just in case
-     The note said it is used so that if a user does this - (a) set some tickmarks, (b)
-     go to another page, (c) clicks Back button - the page will
-     automatically reload. Otherwise it would start with the wrong tick values.
-     }}
-        <form action="." method="get">
-            <div>
-                <input type="hidden" id="completion_dynamic_change" name="completion_dynamic_change" value="0"/>
-            </div>
-        </form>
-    {{/completionenabled}}
     {{> format_tiles/above_tiles}}
 {{/from_ajax}}
 
