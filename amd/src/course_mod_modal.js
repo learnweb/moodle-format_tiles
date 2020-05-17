@@ -331,10 +331,6 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 if (iframeHeight > modalBody.height() - MODAL_MARGIN) {
                     modalBody.animate({"min-height": Math.min(iframeHeight + MODAL_MARGIN, win.height())}, "fast");
                 }
-
-                // Align the iframe in the centre of the modal.
-                // modalBody.css("text-align", "center");
-
                 stopAllVideosOnDismiss(modalRoot);
             });
         };
