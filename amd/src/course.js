@@ -139,8 +139,10 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             contentSection.find("iframe").each(function (index, iframe) {
                 iframe = $(iframe);
                 // Remove the src from the iframe but keep it in case the section is re-opened.
-                iframe.attr('data-src', iframe.attr("src"));
-                iframe.attr('src', "");
+                if (iframe.attr('src')) {
+                    iframe.attr('data-src', iframe.attr("src"));
+                    iframe.attr('src', "");
+                }
             });
 
             // Then Moodle media player.
