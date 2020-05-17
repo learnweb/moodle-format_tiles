@@ -321,7 +321,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         // Some iframes may load content set to mark as complete on view.
                         // So maybe need to update tile completion info. E.g. applies with H5P filter.
                         require(["format_tiles/completion"], function (completion) {
-                            completion.updateTileInformation();
+                            setTimeout(() => {
+                                completion.updateTileInformation();
+                            }, 1000);
                         });
                     }
                 }
