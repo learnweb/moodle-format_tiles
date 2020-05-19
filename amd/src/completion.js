@@ -301,7 +301,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
 
                             // Now re-render the progress indicator if necessary with correct data.
                             const progressIndicator = $(Selector.progressIndicatorId + sec.sectionnum);
-                            if (progressIndicator.attr('data-numcomplete')
+                            if (progressIndicator.attr('data-numcomplete') !== undefined
                                 && progressIndicator.attr('data-numcomplete') !== sec.numcomplete.toString()) {
                                 Templates.render("format_tiles/progress", progressTemplateData(
                                     sec.sectionnum,

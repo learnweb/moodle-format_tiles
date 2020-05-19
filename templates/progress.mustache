@@ -128,4 +128,10 @@
             {{/showAsPercent}}
         {{/isComplete}}
     {{/numOutOf}}
+    {{^numOutOf}}
+        <div class="progress-indic{{#showAsPercent}} percent{{/showAsPercent}} placeholder"
+             id="tileprogress-{{tileid}}" data-numcomplete="-1" data-numoutof="0" style="display: none;">
+            {{! placeholder progress indicator for possible JS replacement}}
+        </div>
+    {{/numOutOf}}
 {{/hastilephoto}}
