@@ -366,7 +366,7 @@ class course_output implements \renderable, \templatable
             $tilephoto = new tile_photo($this->course->id, $thissection->id);
             $tilephotourl = $tilephoto->get_image_url();
 
-            $data['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ')";';
+            $data['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ');"';
             $data['hastilephoto'] = $tilephotourl ? 1 : 0;
             $data['phototileurl'] = $tilephotourl;
             $data['phototileediturl'] = new \moodle_url(
@@ -487,7 +487,7 @@ class course_output implements \renderable, \templatable
                     $tilephotourl = $tilephoto->get_image_url();
 
                     $newtile['extraclasses'] .= $phototileextraclasses;
-                    $newtile['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ')";';
+                    $newtile['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ');"';
                     $newtile['hastilephoto'] = $tilephotourl ? 1 : 0;
                     $newtile['phototileurl'] = $tilephotourl;
                     $newtile['phototileediturl'] = new \moodle_url(
