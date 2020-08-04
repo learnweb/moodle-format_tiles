@@ -104,12 +104,15 @@ define(
                 reopenLastSection, // Set by site admin see settings.php.
                 userId,
                 fitTilesToWidth,
+                usingh5pfilter,
+                enablecompletion,
                 pageType,
                 allowPhotoTiles,
                 useSubTiles,
                 areConvertingLabel,
                 documentationurl
             ) {
+
                 courseId = courseIdInit;
                 // Some args are strings or ints but we prefer bool.  Change to bool now as they are passed on elsewhere.
                 assumeDataStoreConsent = assumeDataStoreConsent === "1";
