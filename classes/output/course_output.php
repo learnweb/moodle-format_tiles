@@ -251,28 +251,6 @@ class course_output implements \renderable, \templatable
     }
 
     /**
-     * Export the course data for the mustache template.
-     * @param \renderer_base $output
-     * @return array|\stdClass
-     * @throws \coding_exception
-     * @throws \dml_exception
-     * @throws \moodle_exception
-     */
-    public function export_for_template_modchooser_only(\renderer_base $output) {
-        $data = $this->get_basic_data($output);
-        if (!$this->fromajax) {
-            throw new \invalid_parameter_exception("Allowed from AJAX only");
-        }
-        if ($this->sectionnum && $this->isediting) {
-            $section = $this->modinfo->get_section_info($this->sectionnum);
-            $data['single_sec_add_cm_control_html'] = $this->courserenderer->course_section_add_cm_control(
-                $this->course, $this->sectionnum, $section->id
-            );
-        }
-        return $data;
-    }
-
-    /**
      * Append the data we need to render section zero.
      * @param [] $data
      * @param \renderer_base $output
