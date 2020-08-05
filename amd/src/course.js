@@ -251,7 +251,10 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     setTimeout(function () {
                         // Manual forms, auto icons and "Restricted until ..." etc.
                         try {
-                            contentArea.find(".togglecompletion, .completioncheckbox, .tag-info").tooltip();
+                            const tooltipItems = contentArea.find(".togglecompletion, .completioncheckbox, .tag-info");
+                            if (tooltipItems.length > 0) {
+                                tooltipItems.tooltip();
+                            }
                         } catch (err) {
                             require(["core/log"], function(log) {
                                 log.debug(err);

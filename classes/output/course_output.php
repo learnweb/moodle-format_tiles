@@ -206,6 +206,7 @@ class course_output implements \renderable, \templatable
         $data['showinitialpageloadingicon'] = format_tiles_width_template_data($this->course->id)['hidetilesinitially'];
         $data['userdisabledjsnav'] = get_user_preferences('format_tiles_stopjsnav');
         $data['useSubtiles'] = get_config('format_tiles', 'allowsubtilesview') && $this->courseformatoptions['courseusesubtiles'];
+        $data['usetooltips'] = get_config('format_tiles', 'usetooltips');
         $data['usingjsnav'] = $this->usingjsnav;
 
         if (!$this->isediting) {

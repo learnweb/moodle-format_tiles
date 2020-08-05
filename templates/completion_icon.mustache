@@ -67,7 +67,7 @@
                 <input type="hidden" name="modulename" value="{{modtitle}}">
                 <input type="hidden" name="completionstate" id="completionstate_{{cmid}}" value="{{completionstateInverse}}">
                 <button class="btn" title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}"
-                        data-toggle="tooltip">
+                        {{#usetooltips}}data-toggle="tooltip"{{/usetooltips}}>
                     <span class="completion-icon completion_img_{{cmid}} completion-icon-{{completionicon}}">
                     </span>
                 </button>
@@ -78,7 +78,7 @@
     {{^completionIsManual}}
         <span class="completioncheckbox completion-auto" id="completion-check-{{cmid}}"
               title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}"
-              data-ismanual="0" data-completionstate="{{completionstate}}" data-toggle="tooltip">
+              data-ismanual="0" data-completionstate="{{completionstate}}"{{#usetooltips}} data-toggle="tooltip"{{/usetooltips}}>
             <span class="completion-icon completion_img_{{cmid}} completion-icon-{{completionicon}}"></span>
         </span>
     {{/completionIsManual}}

@@ -31,6 +31,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
 
         var courseId;
         var strings = {};
+        var useTooltips = false;
         var dataKeys = {
             cmid: "data-cmid",
             numberComplete: "data-numcomplete",
@@ -138,12 +139,14 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
             )).done(function (html) {
                 // Need to repeat jquery selector as it is being replaced (replacwith).
                 tileProgressIndicator.replaceWith(html);
-                try {
-                    $(Selector.progressIndicatorId + sectionNum).tooltip();
-                } catch (err) {
-                    require(["core/log"], function(log) {
-                        log.debug(err);
-                    });
+                if (useTooltips) {
+                    try {
+                        $(Selector.progressIndicatorId + sectionNum).tooltip();
+                    } catch (err) {
+                        require(["core/log"], function(log) {
+                            log.debug(err);
+                        });
+                    }
                 }
             });
 
@@ -175,13 +178,16 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                 fromajax: 1,
                 sesskey: config.sesskey
             };
-            try {
-                form.tooltip('hide');
-            } catch (err) {
-                require(["core/log"], function(log) {
-                    log.debug(err);
-                });
+            if (useTooltips) {
+                try {
+                    form.tooltip('hide');
+                } catch (err) {
+                    require(["core/log"], function(log) {
+                        log.debug(err);
+                    });
+                }
             }
+
             var url = config.wwwroot + "/course/togglecompletion.php";
             $.post(url, data, function (returnData, status) {
                 if (status === "success" && returnData === "OK") {
@@ -245,12 +251,14 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                     completionIcon.addClass(Icon.completionYes).removeClass(Icon.completionNo);
                     parent.attr('data-completionstate', 1);
                     parent.attr('data-original-title', strings.completeauto);
-                    try {
-                        parent.tooltip();
-                    } catch (err) {
-                        require(["core/log"], function(log) {
-                            log.debug(err);
-                        });
+                    if (useTooltips) {
+                        try {
+                            parent.tooltip();
+                        } catch (err) {
+                            require(["core/log"], function(log) {
+                                log.debug(err);
+                            });
+                        }
                     }
                     changeProgressIndicators(sectionNum, $(Selector.progressIndicatorId + sectionNum), 1);
                 }
@@ -311,12 +319,14 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                                 )).done(function (html) {
                                     // Need to repeat jquery selector as it is being replaced (replacwith).
                                     progressIndicator.replaceWith(html);
-                                    try {
-                                        $(Selector.progressIndicatorId + sec.sectionnum).tooltip();
-                                    } catch (err) {
-                                        require(["core/log"], function(log) {
-                                            log.debug(err);
-                                        });
+                                    if (useTooltips) {
+                                        try {
+                                            $(Selector.progressIndicatorId + sec.sectionnum).tooltip();
+                                        } catch (err) {
+                                            require(["core/log"], function(log) {
+                                                log.debug(err);
+                                            });
+                                        }
                                     }
                                 });
                             }
@@ -338,12 +348,14 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                                     }).done(function (html) {
                                         // Need to repeat jquery selector as it is being replaced (replacwith).
                                         progressIndicator.replaceWith(html);
-                                        try {
-                                            $(Selector.progressIndicatorId + sec.sectionnum).tooltip();
-                                        } catch (err) {
-                                            require(["core/log"], function(log) {
-                                                log.debug(err);
-                                            });
+                                        if (useTooltips) {
+                                            try {
+                                                $(Selector.progressIndicatorId + sec.sectionnum).tooltip();
+                                            } catch (err) {
+                                                require(["core/log"], function(log) {
+                                                    log.debug(err);
+                                                });
+                                            }
                                         }
                                     });
                                 }
@@ -362,8 +374,9 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
         };
 
         return {
-            init: function (courseIdInit, strCompleteAuto, labelLikeCourseMods) {
+            init: function (courseIdInit, strCompleteAuto, labelLikeCourseMods, useTooltipsInit) {
                 courseId = courseIdInit;
+                useTooltips = useTooltipsInit === '1';
                 $(document).ready(function () {
                     noCompletionTrackingMods = JSON.parse(labelLikeCourseMods);
                     strings.completeauto = strCompleteAuto;
