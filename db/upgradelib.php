@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * This method finds all courses in 'tiles' format that have actual number of sections
  * bigger than their 'numsections' course format option.
- * For each such course we call {@link format_tiles_upgrade_hide_extra_sections()} and
+ * For each such course we call {@see format_tiles_upgrade_hide_extra_sections()} and
  * either delete or hide "orphaned" sections.
  * @throws dml_exception
  * @throws coding_exception
