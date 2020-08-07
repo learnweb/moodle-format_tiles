@@ -274,7 +274,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
          * This might happen if for example a tile expands and some embedded activities are then complete.
          * Other tiles might use the completion of a previous tile for their availability.
          * This especially applies if teh H5P filter is being used to display embedded H5P in labels.
-         * @param array sectionNums
+         * @param {Number[]} sectionNums
          */
         var updateTileInformation = function (sectionNums) {
             if (sectionNums === undefined) {

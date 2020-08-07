@@ -14,8 +14,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /* eslint space-before-function-paren: 0 */
-// jslinit globals
-/* global localStorage, setTimeout, document*/
 
 /**
  * Javascript Module to handle filter buttons which appear above the tiles if used for format_tiles
