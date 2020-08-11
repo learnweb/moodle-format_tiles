@@ -307,6 +307,9 @@ class course_output implements \renderable, \templatable
         } else {
             $data = $this->format->get_format_options();
         }
+        if (!get_config('format_tiles', 'allowsubtilesview')) {
+            $data['courseusesubtiles'] = 0;
+        }
         return $data;
     }
     /**
