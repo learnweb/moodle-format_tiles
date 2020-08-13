@@ -387,3 +387,4 @@ $string['showprogresssphototiles_desc'] = 'If selected, student progress (e.g. P
 $string['privacy:metadata:preference:format_tiles_stopjsnav'] = 'Whether the user has disabled animated JavaScript navigation.';
 $string['usetooltips'] = 'Use JavaScript tooltips';
 $string['usetooltips_desc'] = 'Use JavaScript tooltips when user hovers over certain items e.g. completion boxes, tiles for tile contents';
+$string['sectionimporterror'] = 'Incorrect course section number detected for the Tile with title "{$a}".  Import or restore not possible until this tile is deleted from destination course or, if restoring, excluded from restore.';

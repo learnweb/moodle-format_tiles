@@ -46,6 +46,12 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     /** @var int */
     protected $originalnumsections = 0;
 
+    public function __construct($plugintype, $pluginname, $step) {
+        $parent = parent::__construct($plugintype, $pluginname, $step);
+        $this->handle_section_checks();
+        return $parent;
+    }
+
     /**
      * Checks if backup file was made on Moodle before 3.3 and we should respect the 'numsections'
      * and potential "orphaned" sections in the end of the course.
@@ -262,5 +268,41 @@ class restore_format_tiles_plugin extends restore_format_plugin {
             return $newfile;
         }
         return false;
+    }
+
+    // Issue 45.
+    // If incompatible Moodle 3.7 version of Tiles plugin was used in Moodle 3.9, incorrectly numbered sections may exist.
+    // To avoid creating a empty sections on import or restore, check for incorrect sections and throw error if found.
+    // In a later release, we can fix the section numbers in course_sections table.
+    // For now, as a short term measure we just stop it happening on import/restore.
+    private function handle_section_checks() {
+        global $DB, $CFG;
+        if ($CFG->version > 2020050000) {
+            $backuprelease = $this->step->get_task()->get_info()->backup_release;
+            if ($backuprelease == '3.9') {
+                $courseid = $this->step->get_task()->get_courseid();
+                $maxsection = $DB->get_field_sql(
+                    'SELECT MAX(section) FROM {course_sections} where course = :courseid',
+                    array('courseid' => $courseid)
+                );
+
+                if ($maxsection > get_config('moodlecourse', 'maxsections')) {
+                    print_error('sectionimporterror', 'format_tiles', '', get_section_name($courseid, $maxsection));
+                }
+
+                $countsections = $DB->get_field_sql(
+                    'SELECT COUNT(section) FROM {course_sections} where course = :courseid',
+                    array('courseid' => $courseid)
+                );
+
+                // We expect the last section to have a number 1 less than the count of all sections.
+                // This is because the first section is section zero and this is counted too.
+                $expectedmaxsection = $countsections - 1;
+                if ($maxsection > $expectedmaxsection) {
+                    print_error('sectionimporterror', 'format_tiles', '', get_section_name($courseid, $maxsection));
+                }
+            }
+        }
+
     }
 }
