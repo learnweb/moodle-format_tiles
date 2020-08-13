@@ -46,6 +46,12 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     /** @var int */
     protected $originalnumsections = 0;
 
+    /**
+     * restore_format_tiles_plugin constructor.
+     * @param $plugintype
+     * @param $pluginname
+     * @param $step
+     */
     public function __construct($plugintype, $pluginname, $step) {
         $parent = parent::__construct($plugintype, $pluginname, $step);
         $this->handle_section_checks();
@@ -270,11 +276,15 @@ class restore_format_tiles_plugin extends restore_format_plugin {
         return false;
     }
 
-    // Issue 45.
-    // If incompatible Moodle 3.7 version of Tiles plugin was used in Moodle 3.9, incorrectly numbered sections may exist.
-    // To avoid creating a empty sections on import or restore, check for incorrect sections and throw error if found.
-    // In a later release, we can fix the section numbers in course_sections table.
-    // For now, as a short term measure we just stop it happening on import/restore.
+    /**
+     * Issue 45.
+     * If incompatible Moodle 3.7 version of Tiles plugin was used in Moodle 3.9, incorrectly numbered sections may exist.
+     * To avoid creating a empty sections on import or restore, check for incorrect sections and throw error if found.
+     * In a later release, we can fix the section numbers in course_sections table.
+     * For now, as a short term measure we just stop it happening on import/restore.
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     private function handle_section_checks() {
         global $DB, $CFG;
         if ($CFG->version > 2020050000) {
