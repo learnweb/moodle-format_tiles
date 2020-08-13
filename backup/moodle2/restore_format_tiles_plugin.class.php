@@ -278,29 +278,31 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     private function handle_section_checks() {
         global $DB, $CFG;
         if ($CFG->version > 2020050000) {
-            $backuprelease = $this->step->get_task()->get_info()->backup_release;
-            if ($backuprelease == '3.9') {
-                $courseid = $this->step->get_task()->get_courseid();
-                $maxsection = $DB->get_field_sql(
-                    'SELECT MAX(section) FROM {course_sections} where course = :courseid',
-                    array('courseid' => $courseid)
-                );
+            $courseid = $this->step->get_task()->get_courseid();
+            $maxsection = $DB->get_field_sql(
+                'SELECT MAX(section) FROM {course_sections} where course = :courseid',
+                array('courseid' => $courseid)
+            );
 
-                if ($maxsection > get_config('moodlecourse', 'maxsections')) {
-                    print_error('sectionimporterror', 'format_tiles', '', get_section_name($courseid, $maxsection));
-                }
+            $maxsectionsconfig = get_config('moodlecourse', 'maxsections');
+            if (!isset($maxsectionsconfig) || !is_numeric($maxsectionsconfig)) {
+                $maxsectionsconfig = 52;
+            }
 
-                $countsections = $DB->get_field_sql(
-                    'SELECT COUNT(section) FROM {course_sections} where course = :courseid',
-                    array('courseid' => $courseid)
-                );
+            if ($maxsection && $maxsection > $maxsectionsconfig) {
+                print_error('sectionimporterror', 'format_tiles', '', get_section_name($courseid, $maxsection));
+            }
 
-                // We expect the last section to have a number 1 less than the count of all sections.
-                // This is because the first section is section zero and this is counted too.
-                $expectedmaxsection = $countsections - 1;
-                if ($maxsection > $expectedmaxsection) {
-                    print_error('sectionimporterror', 'format_tiles', '', get_section_name($courseid, $maxsection));
-                }
+            $countsections = $DB->get_field_sql(
+                'SELECT COUNT(section) FROM {course_sections} where course = :courseid',
+                array('courseid' => $courseid)
+            );
+
+            // We expect the last section to have a number 1 less than the count of all sections.
+            // This is because the first section is section zero and this is counted too.
+            $expectedmaxsection = $countsections ? $countsections - 1 : 0;
+            if ($expectedmaxsection && $maxsection > $expectedmaxsection) {
+                print_error('sectionimporterror', 'format_tiles', '', get_section_name($courseid, $maxsection));
             }
         }
 
