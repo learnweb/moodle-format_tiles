@@ -95,6 +95,19 @@
         {{#pix}}collapse, format_tiles{{/pix}}&nbsp;{{#str}}collapsesections, format_tiles{{/str}}
         </a>
     </div>
+    {{#hasoutofsequencetiles}}
+        <div class="alert alert-danger">
+            {{#str}}tilesoutofsequencewarning, format_tiles{{/str}}
+            <ul>
+                {{#outofsequencetilewarnings}}
+                    <li>
+                        <a href="#section-{{sectionnum}}" data-expected-section="{{expectedsectionnum}}">
+                            {{sectionname}}
+                        </a>
+                {{/outofsequencetilewarnings}}
+            </ul>
+        </div>
+    {{/hasoutofsequencetiles}}
 {{/isediting}}
 
 <ul class="tiles" id="multi_section_tiles">

@@ -389,3 +389,7 @@ $string['usetooltips'] = 'Use JavaScript tooltips';
 $string['usetooltips_desc'] = 'Use JavaScript tooltips when user hovers over certain items e.g. completion boxes, tiles for tile contents';
 $string['restoretoomanysections'] = 'Error: Cannot backup or restore as too many course sections are included ({$a->numsections}) and this is more than permitted ({$a->maxallowed}).  Try excluding or deleting some sections.';
 $string['restoreincorrectsections'] = 'Error: Cannot complete as source course contains incorrectly numbered sections (e.g. section number ({$a->sectionnum}) is higher than the max allowed ({$a->maxallowed}).  Try excluding or deleting sections with high numbers.';
+$string['coursetoomanysections'] = 'Warning for editors: this course has more tiles than the maximum allowed.  A maximum of {$a->max} will be shown to students (down to "{$a->tilename}") (editors can see more).';
+$string['tilesoutofsequencewarning'] = 'Warning for editors: The following tile(s) have errors.  Please delete one or more of these tiles to fix the issues:';
+$string['tileoutofsequence'] = 'This tile has an out of sequence section number.  Please delete the tile altogether to fix the issue (move any contents to another tile first)';
+$string['deletetile'] = 'Delete tile';

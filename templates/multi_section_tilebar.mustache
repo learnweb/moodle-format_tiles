@@ -114,6 +114,14 @@
             {{/isediting}}
         </div>
         {{#isediting}}
+            {{#numberisoutofsequence}}
+                <div class="alert alert-danger" class="sequence-warning">
+                    {{#str}}tileoutofsequence, format_tiles{{/str}}
+                    <a class="btn btn-secondary" href="{{config.wwwroot}}/course/editsection.php?id={{secid}}&sr&delete=1&sesskey={{sesskey}}">
+                        {{#str}}deletetile, format_tiles{{/str}}
+                    </a>
+                </div>
+            {{/numberisoutofsequence}}
             <div class="summary">{{{section_summary}}}</div>
             <div class="section_availability">
                 {{{availabilitymessage}}}
