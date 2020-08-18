@@ -181,12 +181,12 @@ Other
 - Add support for H5P filter
 - Tooltips disabled by default
 
-3.9.0.4 Beta (2020080604)
+3.9.0.3 Beta (2020080603)
 =========================
 - Issue 45 detect if the incompatible Moodle 3.7 version of tiles has been run in Moodle 3.9
 - If it has, throw error if section error detected on import/restore to 3.9
 
-3.9.0.5 Beta (2020080605)
+3.9.0.4 Beta (2020080604)
 =========================
 - Better handling of import/backup error avoidance for issue 45 (teacher can exclude offending section from backup/restore).
 - For courses which have a large number of sections as a result of the issue, do not display them all / show warning to editor.
