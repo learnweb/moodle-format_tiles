@@ -38,6 +38,15 @@ defined('MOODLE_INTERNAL') || die();
 class backup_format_tiles_plugin extends backup_format_plugin {
 
     /**
+     * Carries out some checks at start of course backup.
+     *
+     * @throws moodle_exception
+     */
+    public function define_course_plugin_structure() {
+        $this->fail_if_course_includes_excess_sections();
+    }
+
+    /**
      * Returns the format information to attach to section element.
      */
     protected function define_section_plugin_structure() {
@@ -57,5 +66,63 @@ class backup_format_tiles_plugin extends backup_format_plugin {
 
         $plugin->add_child($tile);
         return $plugin;
+    }
+
+    /**
+     * Issue 45.
+     * If incompatible Moodle 3.7 version of Tiles plugin was used in Moodle 3.9, incorrectly numbered sections may exist.
+     * To avoid creating a empty sections on import or restore, check for incorrect sections and throw error if found.
+     * @throws moodle_exception
+     * @throws dml_exception
+     */
+    private function fail_if_course_includes_excess_sections() {
+        global $DB;
+        $maxsectionsconfig = get_config('moodlecourse', 'maxsections');
+        if (!isset($maxsectionsconfig) || !is_numeric($maxsectionsconfig)) {
+            $maxsectionsconfig = 52;
+        }
+        $maxallowed = $maxsectionsconfig + 1;// We +1 as sec zero not counted.
+        $courseid = $this->step->get_task()->get_courseid();
+
+        // Get the course sections from the database for the course we are backing up and check them.
+        $countsections = $DB->get_field('course_sections', 'COUNT(id)',  array('course' => 'courseid'));
+        if ($countsections && $countsections > $maxallowed * 5) {
+            // Course has a very high number of sections, so fail early as probably en error and we avoid further work.
+            $a = new stdClass();
+            $a->numsections = $countsections;
+            $a->maxallowed = $maxallowed;
+            \core\notification::error(get_string('restoretoomanysections', 'format_tiles', $a));
+            throw new moodle_exception('restoretoomanysections', 'format_tiles', '', $a);
+        }
+
+        $sections = $DB->get_records('course_sections', array('course' => $courseid), 'id ASC, section ASC',
+            'id, section, name', 0, $maxallowed * 5);
+
+        $totalincluded = 0;
+        foreach ($sections as $section) {
+            // Is the section to be included in the backup or has the user excluded it (unchecked box)?  Ignore if excluded.
+            $settingname = 'section_' . $section->id . '_included';
+            $included = $this->get_setting_value($settingname);
+            if ($included) {
+                if ($section->section > $maxallowed) {
+                    // Allowing this section would mean we had some secs with sec numbers too high - disallow.
+                    $a = new stdClass();
+                    $a->sectionnum = $section->section;
+                    $a->maxallowed = $maxallowed;
+                    \core\notification::error(get_string('restoreincorrectsections', 'format_tiles', $a));
+                    throw new moodle_exception('restoreincorrectsections', 'format_tiles', '', $a);
+                } else {
+                    $totalincluded++;
+                    if ($totalincluded > $maxallowed) {
+                        // Allowing this section to go in the backup would mean we have too many secs - disallow.
+                        $a = new stdClass();
+                        $a->numsections = $totalincluded;
+                        $a->maxallowed = $maxallowed;
+                        \core\notification::error(get_string('restoretoomanysections', 'format_tiles', $a));
+                        throw new moodle_exception('restoretoomanysections', 'format_tiles', '', $a);
+                    }
+                }
+            }
+        }
     }
 }

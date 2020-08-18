@@ -47,18 +47,6 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     protected $originalnumsections = 0;
 
     /**
-     * restore_format_tiles_plugin constructor.
-     * @param $plugintype
-     * @param $pluginname
-     * @param $step
-     */
-    public function __construct($plugintype, $pluginname, $step) {
-        $parent = parent::__construct($plugintype, $pluginname, $step);
-        $this->handle_section_checks();
-        return $parent;
-    }
-
-    /**
      * Checks if backup file was made on Moodle before 3.3 and we should respect the 'numsections'
      * and potential "orphaned" sections in the end of the course.
      *
@@ -71,14 +59,19 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     }
 
     /**
-     * Creates a dummy path element in order to be able to execute code after restore
+     * Creates a dummy path element in order to be able to execute code after restore.
+     * Carries out some checks at start of course restore.
      *
      * @return restore_path_element[]
+     * @return restore_path_element[]
      * @throws dml_exception
+     * @throws moodle_exception
      */
     public function define_course_plugin_structure() {
         global $DB;
         // Since this method is executed before the restore we can do some pre-checks here.
+        $this->fail_if_course_includes_excess_sections();
+
         // In case of merging backup into existing course find the current number of sections.
         $target = $this->step->get_task()->get_target();
         if (($target == backup::TARGET_CURRENT_ADDING || $target == backup::TARGET_EXISTING_ADDING) &&
@@ -91,6 +84,51 @@ class restore_format_tiles_plugin extends restore_format_plugin {
 
         // Dummy path element is needed in order for after_restore_course() to be called.
         return [new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse'))];
+    }
+
+    /**
+     * Issue 45.
+     * If incompatible Moodle 3.7 version of Tiles plugin was used in Moodle 3.9, incorrectly numbered sections may exist.
+     * To avoid creating a empty sections on import or restore, check for incorrect sections and throw error if found.
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    private function fail_if_course_includes_excess_sections() {
+        $maxsectionsconfig = get_config('moodlecourse', 'maxsections');
+        if (!isset($maxsectionsconfig) || !is_numeric($maxsectionsconfig)) {
+            $maxsectionsconfig = 52;
+        }
+        $maxallowed = $maxsectionsconfig + 1;// We allow +1 as sec zero not counted.
+
+        // Get the sections from the backup and check them one by one.
+        $backupinfo = $this->step->get_task()->get_info();
+        $totalincluded = 0;
+        foreach ($backupinfo->sections as $section) {
+            // Is the section included or has the user excluded it (unchecked box)?  Ignore if excluded.
+            $sectionid = $section->sectionid;
+            $included = $this->get_setting_value('section_' . $sectionid . '_included');
+            if ($included) {
+                $sectionnum = (int)$section->title;
+                if ($sectionnum > $maxallowed) {
+                    // Allowing this section would mean we had some secs with sec numbers too high - disallow.
+                    $a = new stdClass();
+                    $a->sectionnum = $sectionnum;
+                    $a->maxallowed = $maxallowed;
+                    \core\notification::error(get_string('restoreincorrectsections', 'format_tiles', $a));
+                    throw new moodle_exception('restoreincorrectsections', 'format_tiles', '', $a);
+                } else {
+                    $totalincluded++;
+                    if ($totalincluded > $maxallowed) {
+                        // Allowing this section would mean we have too many secs - disallow.
+                        $a = new stdClass();
+                        $a->numsections = $totalincluded;
+                        $a->maxallowed = $maxallowed;
+                        \core\notification::error(get_string('restoretoomanysections', 'format_tiles', $a));
+                        throw new moodle_exception('restoretoomanysections', 'format_tiles', '', $a);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -174,7 +212,7 @@ class restore_format_tiles_plugin extends restore_format_plugin {
             // If the new course has the filter bar set to use outcomes then switch it.
             // Tile outcomes will not work correctly in the new course as they include ids from the old course.
             // This is a temporary solution until the tile outcomes code can be refactored not to use outcome ids.
-            $newrecord = new stdClass;
+            $newrecord = new stdClass();
             $newrecord->id = $currentfilterbarsetting->id;
             if ($currentfilterbarsetting->value == FILTER_OUTCOMES_ONLY) {
                 $newrecord->value = FILTER_NONE;
@@ -274,47 +312,5 @@ class restore_format_tiles_plugin extends restore_format_plugin {
             return $newfile;
         }
         return false;
-    }
-
-    /**
-     * Issue 45.
-     * If incompatible Moodle 3.7 version of Tiles plugin was used in Moodle 3.9, incorrectly numbered sections may exist.
-     * To avoid creating a empty sections on import or restore, check for incorrect sections and throw error if found.
-     * In a later release, we can fix the section numbers in course_sections table.
-     * For now, as a short term measure we just stop it happening on import/restore.
-     * @throws dml_exception
-     * @throws moodle_exception
-     */
-    private function handle_section_checks() {
-        global $DB, $CFG;
-        if ($CFG->version > 2020050000) {
-            $courseid = $this->step->get_task()->get_courseid();
-            $maxsection = $DB->get_field_sql(
-                'SELECT MAX(section) FROM {course_sections} where course = :courseid',
-                array('courseid' => $courseid)
-            );
-
-            $maxsectionsconfig = get_config('moodlecourse', 'maxsections');
-            if (!isset($maxsectionsconfig) || !is_numeric($maxsectionsconfig)) {
-                $maxsectionsconfig = 52;
-            }
-
-            if ($maxsection && $maxsection > $maxsectionsconfig) {
-                print_error('sectionimporterror', 'format_tiles', '', get_section_name($courseid, $maxsection));
-            }
-
-            $countsections = $DB->get_field_sql(
-                'SELECT COUNT(section) FROM {course_sections} where course = :courseid',
-                array('courseid' => $courseid)
-            );
-
-            // We expect the last section to have a number 1 less than the count of all sections.
-            // This is because the first section is section zero and this is counted too.
-            $expectedmaxsection = $countsections ? $countsections - 1 : 0;
-            if ($expectedmaxsection && $maxsection > $expectedmaxsection) {
-                print_error('sectionimporterror', 'format_tiles', '', get_section_name($courseid, $maxsection));
-            }
-        }
-
     }
 }
