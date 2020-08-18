@@ -174,9 +174,20 @@ Other
 - Refactor code for simplicity and to help future features
 - Bug fixes
 
-3.8.0.x Beta (2020080xxx)
+3.9.0.x Beta (2020080xxx)
 =========================
 - Add support for Moodle 3.8 and 3.9
 - Bug fixes
 - Add support for H5P filter
 - Tooltips disabled by default
+
+3.9.0.4 Beta (2020080604)
+=========================
+- Issue 45 detect if the incompatible Moodle 3.7 version of tiles has been run in Moodle 3.9
+- If it has, throw error if section error detected on import/restore to 3.9
+
+3.9.0.5 Beta (2020080605)
+=========================
+- Better handling of import/backup error avoidance for issue 45 (teacher can exclude offending section from backup/restore).
+- For courses which have a large number of sections as a result of the issue, do not display them all / show warning to editor.
+- On course sections which have too high a section number, display an error message to editors and suggest a fix.
