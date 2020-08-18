@@ -484,7 +484,7 @@ class format_tiles_renderer extends format_section_renderer_base
             'mod_' . $mod->modname,
             'content', $record->revision
         );
-        $formatoptions = new stdClass;
+        $formatoptions = new stdClass();
         $formatoptions->noclean = true;
         $formatoptions->overflowdiv = true;
         $formatoptions->context = $context;
