@@ -85,7 +85,7 @@ class backup_format_tiles_plugin extends backup_format_plugin {
         $courseid = $this->step->get_task()->get_courseid();
 
         // Get the course sections from the database for the course we are backing up and check them.
-        $countsections = $DB->get_field('course_sections', 'COUNT(id)',  array('course' => 'courseid'));
+        $countsections = $DB->get_field('course_sections', 'COUNT(id)',  array('course' => $courseid));
         if ($countsections && $countsections > $maxallowed * 5) {
             // Course has a very high number of sections, so fail early as probably en error and we avoid further work.
             $a = new stdClass();
