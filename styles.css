@@ -1894,3 +1894,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     transform: translateY(-50px);
     height: 0;
 }
+.format-tiles .course-content li.section .summary ul {
+    list-style: disc;
+}

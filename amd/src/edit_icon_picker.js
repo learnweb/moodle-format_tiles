@@ -259,7 +259,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                     image.click(function (e) {
                         var clickedImage = $(e.currentTarget);
                         setIcon(
-                            modalRoot.attr("data-sectionid"),
+                            modalRoot.attr("data-true-sectionid"),
                             modalRoot.attr("data-section"),
                             clickedImage.attr("data-filename"),
                             clickedImage.attr("data-filename"),
@@ -301,7 +301,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                                 modal.show();
                                 var modalRoot = $(modal.root);
                                 modalRoot.attr("id", "icon_picker_modal");
-                                modalRoot.attr("data-sectionid", sectionId);
+                                modalRoot.attr("data-true-sectionid", sectionId);
                                 modalRoot.attr("data-section", section);
                                 modalRoot.addClass("icon_picker_modal");
                                 modalRoot.on("click", ".pickericon", function (e) {
@@ -366,7 +366,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                 }
             } else {
                 // We already have the modal so recycle it instead of re-rendering.
-                modalStored.root.attr("data-sectionid", sectionId);
+                modalStored.root.attr("data-true-sectionid", sectionId);
                 modalStored.root.attr("data-section", section);
                 modalStored.root.off("click");
                 modalStored.root.on("click", ".pickericon", function (e) {
@@ -415,7 +415,7 @@ define(["jquery", "core/templates", "core/ajax", "core/str", "core/notification"
                         launchIconPicker(
                             pageType,
                             courseId,
-                            clickedIcon.attr('data-sectionid'),
+                            clickedIcon.attr('data-true-sectionid'),
                             clickedIcon.attr('data-section'),
                             allowPhotoTiles,
                             documentationurl

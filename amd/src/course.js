@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/* global setTimeout, document, window */
 /* eslint space-before-function-paren: 0 */
 
 /**
@@ -251,7 +250,10 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     setTimeout(function () {
                         // Manual forms, auto icons and "Restricted until ..." etc.
                         try {
-                            contentArea.find(".togglecompletion, .completioncheckbox, .tag-info").tooltip();
+                            const tooltipItems = contentArea.find(".togglecompletion, .completioncheckbox, .tag-info");
+                            if (tooltipItems.length > 0) {
+                                tooltipItems.tooltip();
+                            }
                         } catch (err) {
                             require(["core/log"], function(log) {
                                 log.debug(err);
@@ -317,7 +319,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         }
                     });
 
-                    if(enableCompletion) {
+                    if (enableCompletion) {
                         // Some iframes may load content set to mark as complete on view.
                         // So maybe need to update tile completion info. E.g. applies with H5P filter.
                         require(["format_tiles/completion"], function (completion) {

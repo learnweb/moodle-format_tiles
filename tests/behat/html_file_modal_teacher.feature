@@ -1,4 +1,4 @@
-@format @format_tiles @format_tiles_mod_modal @format_tiles_html_modal_teacher @javascript
+@format @format_tiles @format_tiles_mod_modal @format_tiles_html_modal_teacher @javascript @_file_upload
 Feature: HTML file can be set to open in modal windows with subtiles off
   In order to improve UX
   As a user

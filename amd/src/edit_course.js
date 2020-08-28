@@ -26,7 +26,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since Moodle 3.3
  */
-/* global document, window */
+
 /* eslint space-before-function-paren: 0 */
 
 define(
@@ -104,12 +104,15 @@ define(
                 reopenLastSection, // Set by site admin see settings.php.
                 userId,
                 fitTilesToWidth,
+                usingh5pfilter,
+                enablecompletion,
                 pageType,
                 allowPhotoTiles,
                 useSubTiles,
                 areConvertingLabel,
                 documentationurl
             ) {
+
                 courseId = courseIdInit;
                 // Some args are strings or ints but we prefer bool.  Change to bool now as they are passed on elsewhere.
                 assumeDataStoreConsent = assumeDataStoreConsent === "1";
@@ -168,10 +171,10 @@ define(
                     }
 
                     // We don't want to re-implement show/hide sections, so we let core handle it.
-                    // Core will re-render all activties when it hides section, and they will be in non subtiles form.
+                    // Core will re-render all activities when it hides section, and they will be in non subtiles form.
                     // So we just delete them and can add them back when we un-hide or expand.
                     $('body').on('click keypress', Selector.SECTION_MAIN + ' ' +
-                        Selector.SECTIONACTIONMENU + '[data-sectionid] ' +
+                        Selector.SECTIONACTIONMENU + '[data-true-sectionid] ' +
                         'a[data-action]', function(e) {
                             var target = $(e.target).closest(Selector.MENU_ACTION);
                             var sectionMain = target.closest(Selector.SECTION_MAIN);

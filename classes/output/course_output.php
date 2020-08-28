@@ -206,6 +206,7 @@ class course_output implements \renderable, \templatable
         $data['showinitialpageloadingicon'] = format_tiles_width_template_data($this->course->id)['hidetilesinitially'];
         $data['userdisabledjsnav'] = get_user_preferences('format_tiles_stopjsnav');
         $data['useSubtiles'] = get_config('format_tiles', 'allowsubtilesview') && $this->courseformatoptions['courseusesubtiles'];
+        $data['usetooltips'] = get_config('format_tiles', 'usetooltips');
         $data['usingjsnav'] = $this->usingjsnav;
 
         if (!$this->isediting) {
@@ -217,6 +218,9 @@ class course_output implements \renderable, \templatable
         }
         // RTL support for nav arrows direction (Arabic/ Hebrew).
         $data['is-rtl'] = right_to_left();
+
+        $data['outofsequencetilewarnings'] = [];
+        $data['hasoutofsequencetiles'] = false;
         return $data;
     }
 
@@ -248,28 +252,6 @@ class course_output implements \renderable, \templatable
             // TODO fix this.
             throw BadMethodCallException("Not yet implemented");
         }
-    }
-
-    /**
-     * Export the course data for the mustache template.
-     * @param \renderer_base $output
-     * @return array|\stdClass
-     * @throws \coding_exception
-     * @throws \dml_exception
-     * @throws \moodle_exception
-     */
-    public function export_for_template_modchooser_only(\renderer_base $output) {
-        $data = $this->get_basic_data($output);
-        if (!$this->fromajax) {
-            throw new \invalid_parameter_exception("Allowed from AJAX only");
-        }
-        if ($this->sectionnum && $this->isediting) {
-            $section = $this->modinfo->get_section_info($this->sectionnum);
-            $data['single_sec_add_cm_control_html'] = $this->courserenderer->course_section_add_cm_control(
-                $this->course, $this->sectionnum, $section->id
-            );
-        }
-        return $data;
     }
 
     /**
@@ -328,6 +310,9 @@ class course_output implements \renderable, \templatable
         } else {
             $data = $this->format->get_format_options();
         }
+        if (!get_config('format_tiles', 'allowsubtilesview')) {
+            $data['courseusesubtiles'] = 0;
+        }
         return $data;
     }
     /**
@@ -366,7 +351,7 @@ class course_output implements \renderable, \templatable
             $tilephoto = new tile_photo($this->course->id, $thissection->id);
             $tilephotourl = $tilephoto->get_image_url();
 
-            $data['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ')";';
+            $data['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ');"';
             $data['hastilephoto'] = $tilephotourl ? 1 : 0;
             $data['phototileurl'] = $tilephotourl;
             $data['phototileediturl'] = new \moodle_url(
@@ -447,11 +432,37 @@ class course_output implements \renderable, \templatable
                 $data['usingaltstyle'] = 1;
             }
         }
-
+        $maxallowedsections = $this->format->get_max_sections();
+        $sectioncountwarningissued = false;
+        $previoussectionnumber = 0;
+        $previoustiletitle = '';
+        $countincludedsections = 0;
         foreach ($this->modinfo->get_section_info_all() as $sectionnum => $section) {
             // Show the section if the user is permitted to access it, OR if it's not available
             // but there is some available info text which explains the reason & should display,
             // OR it is hidden but the course has a setting to display hidden sections as unavilable.
+
+            // If we have sections with numbers greater than the max allowed, do not show them unless teacher.
+            // (Showing more to editors allows editor to fix them.)
+            if ($countincludedsections > $maxallowedsections) {
+                if (!$data['canedit']) {
+                    // Do not show them to students at all.
+                    break;
+                } else {
+                    if (!$sectioncountwarningissued) {
+                        $a = new \stdClass();
+                        $a->max = $maxallowedsections;
+                        $a->tilename = $previoustiletitle;
+                        \core\notification::error(get_string('coursetoomanysections', 'format_tiles', $a));
+                        $sectioncountwarningissued = true;
+                    }
+                    if ($countincludedsections > $maxallowedsections * 2) {
+                        // Even if the user is editing, if we have a *very* large number of sections, we only show 2 x that number.
+                        $data['showsectioncountwarning'] = true;
+                        break;
+                    }
+                }
+            }
 
             $isphototile = $allowedphototiles && array_search($section->id, $phototileids) !== false;
             $showsection = $section->uservisible ||
@@ -464,6 +475,7 @@ class course_output implements \renderable, \templatable
                 }
 
                 $longtitlelength = 65;
+
                 $newtile = array(
                     'tileid' => $section->section,
                     'secid' => $section->id,
@@ -481,13 +493,26 @@ class course_output implements \renderable, \templatable
                     'extraclasses' => ''
                 );
 
+                // If this tile is out of order (section number too high) display a warning.
+                $expectedsectionnumber = $previoussectionnumber + 1;
+                if ($previoussectionnumber != 0 && $section->section > $expectedsectionnumber) {
+                    // Specify target as section before true target (i.e. -1).
+                    $data['hasoutofsequencetiles'] = true;
+                    $data['outofsequencetilewarnings'][] = array(
+                        'sectionnum' => $section->section,
+                        'expectedsectionnum' => $expectedsectionnumber,
+                        'sectionname' => $title
+                    );
+                    $newtile['numberisoutofsequence'] = true;
+                }
+
                 // If photo tile backgrounds are allowed by site admin, prepare them for this tile.
                 if ($isphototile) {
                     $tilephoto = new tile_photo($this->course->id, $section->id);
                     $tilephotourl = $tilephoto->get_image_url();
 
                     $newtile['extraclasses'] .= $phototileextraclasses;
-                    $newtile['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ')";';
+                    $newtile['phototileinlinestyle'] = 'style = "background-image: url(' . $tilephotourl . ');"';
                     $newtile['hastilephoto'] = $tilephotourl ? 1 : 0;
                     $newtile['phototileurl'] = $tilephotourl;
                     $newtile['phototileediturl'] = new \moodle_url(
@@ -551,6 +576,8 @@ class course_output implements \renderable, \templatable
 
                 // Finally add tile we constructed to the array.
                 $data['tiles'][] = $newtile;
+                $previoussectionnumber = $section->section;
+                $previoustiletitle = $title;
             } else if ($sectionnum == 0) {
                 // Add in section zero completion data to overall completion count.
                 if ($section->visible && $this->completionenabled) {
@@ -562,6 +589,7 @@ class course_output implements \renderable, \templatable
                     }
                 }
             }
+            $countincludedsections++;
         }
         $data['all_tiles_expanded'] = $this->isediting &&
             (
@@ -616,7 +644,7 @@ class course_output implements \renderable, \templatable
                     get_docs_url('Activity_completion_settings#Changing_activity_completion_settings_in_bulk'),
                     $output->pix_icon('help', '', 'core')
                 );
-                \core\notification::WARNING(
+                \core\notification::warning(
                     get_string('completionwarning', 'format_tiles') . ' '  . $bulklink . ' ' . $helplink
                 );
             }

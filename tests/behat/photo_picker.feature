@@ -1,4 +1,4 @@
-@format @format_tiles @format_tiles_photo_tiles @javascript
+@format @format_tiles @format_tiles_photo_picker @javascript @_file_upload
 Feature: Teacher can allocate photos to tiles
 
   Background:
@@ -47,7 +47,7 @@ Feature: Teacher can allocate photos to tiles
     And I click on "#tileicon_1" "css_element"
     And I wait until the page is ready
     And I wait "1" seconds
-    And "Pick a new icon" "dialogue" should be visible
+    And "Pick a new icon or background photo" "dialogue" should be visible
     And I follow "Upload new photo"
     And I upload "course/format/tiles/tests/fixtures/blueberries.jpg" file to "Upload new photo" filemanager
     And I press "Save changes"
@@ -70,7 +70,7 @@ Feature: Teacher can allocate photos to tiles
     And I click on "#tileicon_3" "css_element"
     And I wait until the page is ready
     And I wait "1" seconds
-    And "Pick a new icon" "dialogue" should be visible
+    And "Pick a new icon or background photo" "dialogue" should be visible
     And I follow "Upload new photo"
     And I upload "course/format/tiles/tests/fixtures/strawberries.jpg" file to "Upload new photo" filemanager
     And I press "Save changes"
@@ -81,7 +81,7 @@ Feature: Teacher can allocate photos to tiles
     And I click on "#tileicon_7" "css_element"
     And I wait until the page is ready
     And I wait "1" seconds
-    And "Pick a new icon" "dialogue" should be visible
+    And "Pick a new icon or background photo" "dialogue" should be visible
     And I follow "Photo library"
     And I wait until the page is ready
     And I click on ".photo[title=\"blueberries.jpg\"]" "css_element" in the "#icon_picker_modal" "css_element"
@@ -143,7 +143,7 @@ Feature: Teacher can allocate photos to tiles
     And I click on "#tileicon_3" "css_element"
     And I wait until the page is ready
     And I wait "1" seconds
-    And "Pick a new icon" "dialogue" should be visible
+    And "Pick a new icon or background photo" "dialogue" should be visible
     And I follow "Photo library"
     And I wait until the page is ready
     And I click on ".photo[title=\"blueberries.jpg\"]" "css_element" in the "#icon_picker_modal" "css_element"
@@ -153,7 +153,7 @@ Feature: Teacher can allocate photos to tiles
     And I click on "#tileicon_6" "css_element"
     And I wait until the page is ready
     And I wait "1" seconds
-    And "Pick a new icon" "dialogue" should be visible
+    And "Pick a new icon or background photo" "dialogue" should be visible
     And I follow "Photo library"
     And I wait until the page is ready
     And I click on ".photo[title=\"strawberries.jpg\"]" "css_element" in the "#icon_picker_modal" "css_element"

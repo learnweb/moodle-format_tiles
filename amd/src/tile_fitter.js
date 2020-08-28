@@ -25,7 +25,6 @@
  * @since Moodle 3.3
  */
 
-/* global setTimeout, document, window */
 /* eslint space-before-function-paren: 0 */
 
 define(["jquery", "core/ajax"], function ($, ajax) {
@@ -203,6 +202,10 @@ define(["jquery", "core/ajax"], function ($, ajax) {
             var maxTilesPerRow = 1;
             var thisRowCount = 0;
             var allTiles = $(Selector.TILES).children(Selector.TILE).not(Selector.TILE_COLLAPSED).not(".spacer");
+            if (allTiles.length === 0) {
+                // Course has no sections.
+                return [];
+            }
             allTiles.each(function (index, tile) {
                 currentSectionId = $(tile).attr("data-section");
                 var maxVerticalPositionDifference = 100;

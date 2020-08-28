@@ -60,7 +60,7 @@
     {{#isComplete}}
         <div class="progress-indic{{#showAsPercent}} percent{{/showAsPercent}}{{#isOverall}} overall-progress allcomplete{{/isOverall}}"
              id="tileprogress-{{tileid}}" data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}"
-             title="{{#str}}allcomplete, format_tiles{{/str}}" data-toggle="tooltip">
+             title="{{#str}}allcomplete, format_tiles{{/str}}"{{#usetooltips}} data-toggle="tooltip"{{/usetooltips}}>
             {{#isOverall}}{{#pix}}star-o, format_tiles, {{#str}}allcomplete, format_tiles{{/str}}{{/pix}}{{#str}}allcomplete, format_tiles{{/str}}{{/isOverall}}
             {{^isOverall}}{{#pix}}check, format_tiles, {{#str}}allcomplete, format_tiles{{/str}}{{/pix}}{{/isOverall}}
         </div>
@@ -72,8 +72,14 @@
             {{#showAsPercent}}
                 <div class="progress-indic percent{{#isOverall}} overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
                      data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}"
+                    {{#usetooltips}}
                      title="{{#str}}progress, format_tiles{{/str}}:<br>{{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}}<br>{{percent}}%<br>{{#str}}complete, format_tiles{{/str}}"
-                    data-toggle="tooltip" data-html="true">
+                        data-toggle="tooltip" data-html="true"
+                    {{/usetooltips}}
+                    {{^usetooltips}}
+                     title="{{#str}}progress, format_tiles{{/str}}: {{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}} ({{percent}}%) {{#str}}complete, format_tiles{{/str}}"
+                    {{/usetooltips}}
+                >
 
                     <div class="progress-indic-label">
                       {{#isOverall}}{{#str}}overallprogressshort, format_tiles{{/str}}{{/isOverall}}{{^isOverall}}{{#str}}progress, format_tiles{{/str}}{{/isOverall}} %
@@ -94,8 +100,15 @@
 
             {{^showAsPercent}}
                 <div class="progress-indic{{#isOverall}} overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
+                     data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}"
+                    {{#usetooltips}}
                      title="{{#str}}progress, format_tiles{{/str}}:<br> {{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}} ({{percent}}%) <br>{{#str}}complete, format_tiles{{/str}}"
-                     data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" data-toggle="tooltip" data-html="true">
+                        data-toggle="tooltip" data-html="true"
+                    {{/usetooltips}}
+                    {{^usetooltips}}
+                     title="{{#str}}progress, format_tiles{{/str}}: {{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}} ({{percent}}%) {{#str}}complete, format_tiles{{/str}}"
+                    {{/usetooltips}}
+                >
                     {{#str}}progress, format_tiles{{/str}}:
                     <span id="num-complete-{{tileid}}">{{numComplete}} / {{numOutOf}}</span>
                 </div>
@@ -107,7 +120,7 @@
 {{#hastilephoto}}
     {{#numOutOf}}
         {{#isComplete}}
-            <div class="progress-complete-alt pull-right" id="tileprogress-{{tileid}}" data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" title="{{#str}}allcomplete, format_tiles{{/str}}" data-toggle="tooltip">
+            <div class="progress-complete-alt pull-right" id="tileprogress-{{tileid}}" data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" title="{{#str}}allcomplete, format_tiles{{/str}}"{{#usetooltips}} data-toggle="tooltip"{{/usetooltips}}>
                 {{#pix}}completion-y, format_tiles, {{#str}}allcomplete, format_tiles{{/str}}{{/pix}}
             </div>
         {{/isComplete}}
@@ -120,8 +133,15 @@
             {{/showAsPercent}}
             {{^showAsPercent}}
                 <div class="progress-indic{{#isOverall}} overall-progress{{/isOverall}}" id="tileprogress-{{tileid}}"
-                     title="{{#str}}progress, format_tiles{{/str}}:<br> {{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}} ({{percent}}%) <br>{{#str}}complete, format_tiles{{/str}}"
-                    data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}" data-toggle="tooltip" data-html="true">
+                    data-numcomplete="{{numComplete}}" data-numoutof="{{numOutOf}}"
+                    {{#usetooltips}}
+                         title="{{#str}}progress, format_tiles{{/str}}:<br> {{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}} ({{percent}}%) <br>{{#str}}complete, format_tiles{{/str}}"
+                         data-toggle="tooltip" data-html="true"
+                    {{/usetooltips}}
+                    {{^usetooltips}}
+                     title="{{#str}}progress, format_tiles{{/str}}: {{numComplete}} / {{numOutOf}} {{#str}}items, format_tiles{{/str}} ({{percent}}%) {{#str}}complete, format_tiles{{/str}}"
+                    {{/usetooltips}}
+                >
                     {{#str}}progress, format_tiles{{/str}}:
                     <span id="num-complete-{{tileid}}">{{numComplete}} / {{numOutOf}}</span>
                 </div>

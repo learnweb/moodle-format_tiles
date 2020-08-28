@@ -91,7 +91,7 @@ define(["jquery"], function ($) {
                 {key: "datapref", component: "format_tiles"},
                 {key: "dataprefquestion", component: "format_tiles"},
                 {key: "yes"},
-                {key: "no"}
+                {key: "cancel"}
             ]).done(function (s) {
                 Notification.confirm(
                     s[0],

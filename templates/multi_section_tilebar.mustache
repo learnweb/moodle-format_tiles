@@ -55,8 +55,10 @@
 }}
 
 <li id="section-{{tileid}}" class="section main {{#hidden}}hidden {{/hidden}}{{#isactive}}current {{/isactive}}clearfix{{#restricted}} tile_bar_restricted{{/restricted}}{{#hastilephoto}} phototilebar{{/hastilephoto}} collapsed"
-    role="region" data-section="{{tileid}}" data-sectionid="{{secid}}"
-    aria-label="{{{title}}}">
+    role="region" data-section="{{tileid}}" data-true-sectionid="{{secid}}"
+    {{! Issue #39 we put data-sectionid = {course section number} here, because that is the pattern adopted by core in Moodle 3.9 in the course renderer course_section_add_cm_control()}}
+    {{! We also include "data-true-sectionid" which represents the id of the section in the course_sections table (we used to call this data-sectionid, but that conflicts with the core approach in 3.9)}}
+    data-sectionid="{{tileid}}" aria-label="{{{title}}}">
     {{!hidden section requried for drag and drop to work, left side and right side for edit controls}}
     <span class="hidden sectionname">{{{title}}}</span>
     <div class="left side">{{{leftcontent}}}</div>
@@ -104,7 +106,7 @@
                 {{/is_expanded}}
                 {{^is_expanded}}
                     <a class="expand-collapse-sec expand-section pull-right" data-toggle="tooltip" data-placement="right" data-original-title="{{#str}}expand, format_tiles{{/str}}"
-                       data-sectionid="{{secid}}" data-section="{{tileid}}" id="expand{{tileid}}"
+                       data-true-sectionid="{{secid}}" data-section="{{tileid}}" id="expand{{tileid}}"
                        href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&expand={{tileid}}#section-{{tileid}}">
                     </a>
                 {{/is_expanded}}
@@ -112,6 +114,14 @@
             {{/isediting}}
         </div>
         {{#isediting}}
+            {{#numberisoutofsequence}}
+                <div class="alert alert-danger" class="sequence-warning">
+                    {{#str}}tileoutofsequence, format_tiles{{/str}}
+                    <a class="btn btn-secondary" href="{{config.wwwroot}}/course/editsection.php?id={{secid}}&sr&delete=1&sesskey={{sesskey}}">
+                        {{#str}}deletetile, format_tiles{{/str}}
+                    </a>
+                </div>
+            {{/numberisoutofsequence}}
             <div class="summary">{{{section_summary}}}</div>
             <div class="section_availability">
                 {{{availabilitymessage}}}
