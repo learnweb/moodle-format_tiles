@@ -430,6 +430,7 @@ class format_tiles extends format_base {
             }
             if (!get_config('format_tiles', 'allowsubtilesview')) {
                 unset($courseformatoptions['courseusesubtiles']);
+                unset($courseformatoptions['usesubtilesseczero']);
             }
         }
 
@@ -516,7 +517,8 @@ class format_tiles extends format_base {
                 'help_component' => 'format_tiles'
             );
 
-            if (get_config('format_tiles', 'allowsubtilesview')) {
+            $allowsubtilesview = get_config('format_tiles', 'allowsubtilesview');
+            if ($allowsubtilesview) {
                 $courseformatoptionsedit['courseusesubtiles'] = array(
                     'label' => new lang_string('courseusesubtiles', 'format_tiles'),
                     'element_type' => 'advcheckbox',
@@ -534,14 +536,15 @@ class format_tiles extends format_base {
                 'help' => 'courseusebarforheadings',
                 'help_component' => 'format_tiles',
             );
-
-            $courseformatoptionsedit['usesubtilesseczero'] = array(
-                'label' => new lang_string('usesubtilesseczero', 'format_tiles'),
-                'element_type' => 'advcheckbox',
-                'element_attributes' => array(get_string('notrecommended', 'format_tiles')),
-                'help' => 'usesubtilesseczero',
-                'help_component' => 'format_tiles',
-            );
+            if ($allowsubtilesview) {
+                $courseformatoptionsedit['usesubtilesseczero'] = array(
+                    'label' => new lang_string('usesubtilesseczero', 'format_tiles'),
+                    'element_type' => 'advcheckbox',
+                    'element_attributes' => array(get_string('notrecommended', 'format_tiles')),
+                    'help' => 'usesubtilesseczero',
+                    'help_component' => 'format_tiles',
+                );
+            }
 
             $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
         }
