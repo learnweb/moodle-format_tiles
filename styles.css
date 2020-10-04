@@ -303,7 +303,7 @@
 }
 .format-tiles #page .course-content ul li.section.main {
     /*adaptable theme*/
-    background: #fff;
+    background-color: #fff;
     border: 0;
 }
 .format-tiles .course-content ul li.section.main.moveablesection {
@@ -330,7 +330,8 @@
     box-shadow: 2px 4px 5px 0 #bdbdbd;
     position: relative;
 }
-.format-tiles .course-content ul.tiles .tile.spacer {
+.format-tiles .course-content ul.tiles .tile.spacer,
+.format-tiles.pagelayout-course .course-content li.section ul li.activity.spacer /* Remui theme */ {
     margin-top: 0;
     margin-bottom: 0;
     padding: 0;
