@@ -215,13 +215,13 @@ class format_tiles_external extends external_api
 
         $existingicon = $DB->get_record(
             'course_format_options',
-            ['format' => 'tiles', 'name' => $optionname, 'courseid' => $data['courseid'], 'sectionid' => $data['sectionid']]
+            ['courseid' => $data['courseid'], 'format' => 'tiles', 'sectionid' => $data['sectionid'], 'name' => $optionname]
         );
         if (!isset($existingicon->value)) {
             // No icon is presently stored for this so we need to insert new record.
             $record = new stdClass();
-            $record->format = 'tiles';
             $record->courseid = $data['courseid'];
+            $record->format = 'tiles';
             $record->sectionid = $data['sectionid'];
             $record->name = $optionname;
             $record->value = $data['image'];
@@ -230,13 +230,13 @@ class format_tiles_external extends external_api
             // We are dealing with a tile icon for one particular section, so check if user has picked the course default.
             $defaulticonthiscourse = $DB->get_record(
                 'course_format_options',
-                ['format' => 'tiles', 'name' => 'defaulttileicon', 'courseid' => $data['courseid'], 'sectionid' => 0]
+                ['courseid' => $data['courseid'], 'format' => 'tiles', 'sectionid' => 0, 'name' => 'defaulttileicon']
             )->value;
             if ($data['image'] == $defaulticonthiscourse) {
                 // Using default icon for a tile do don't store anything in database = default.
                 $result = $DB->delete_records(
                     'course_format_options',
-                    ['format' => 'tiles', 'name' => 'tileicon', 'courseid' => $data['courseid'], 'sectionid' => $data['sectionid']]
+                    ['courseid' => $data['courseid'], 'format' => 'tiles', 'sectionid' => $data['sectionid'], 'name' => 'tileicon']
                 );
             } else {
                 // User has not picked default and there is an existing record so update it.

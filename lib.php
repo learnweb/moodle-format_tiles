@@ -828,13 +828,13 @@ class format_tiles extends format_base {
         $oldvalues = array(
             'iconthistile' => $DB->get_field(
                 'course_format_options', 'value',
-                ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileicon']
+                ['courseid' => $this->courseid, 'format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileicon']
             ),
             'outcomethistile' => $DB->get_record(
                 'course_format_options',
-                ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileoutcomeid']
+                ['courseid' => $this->courseid, 'format' => 'tiles', 'sectionid' => $data['id'], 'name' => 'tileoutcomeid']
             ),
-            'photothistile' => \format_tiles\tile_photo::get_course_format_option_value($data['id'])
+            'photothistile' => \format_tiles\tile_photo::get_course_format_option_value($data['id'], $this->courseid)
         );
 
         // If the edit is taking place from format_tiles_inplace_editable(),
@@ -867,7 +867,10 @@ class format_tiles extends format_base {
         $keystoremove = ['tileicon', 'tileoutcomeid', 'tilephoto'];
         foreach ($keystoremove as $key) {
             if (!isset($data[$key])) {
-                $DB->delete_records('course_format_options', ['format' => 'tiles', 'sectionid' => $data['id'], 'name' => $key]);
+                $DB->delete_records(
+                    'course_format_options',
+                    ['courseid' => $this->courseid, 'format' => 'tiles', 'sectionid' => $data['id'], 'name' => $key]
+                );
                 if (isset($oldvalues[$key]) && $oldvalues[$key]) {
                     // Used to have a value so return true to indicate it changed.
                     $result = true;

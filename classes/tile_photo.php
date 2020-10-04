@@ -99,8 +99,8 @@ class tile_photo {
     private function get_course_format_option() {
         global $DB;
         return $DB->get_record('course_format_options', array(
-                'format' => 'tiles',
                 'courseid' => $this->courseid,
+                'format' => 'tiles',
                 'sectionid' => $this->sectionid,
                 'name' => 'tilephoto'
             )
@@ -109,13 +109,15 @@ class tile_photo {
 
     /**
      * Get the data from the course_format_options table for this tile_photo object.
-     * @param int $sectionid the section if that the format option relates to.
+     * @param int $sectionid the section id that the format option relates to.
+     * @param int $courseid the course id that the format option relates to.
      * @return mixed
      * @throws \dml_exception
      */
-    public static function get_course_format_option_value($sectionid) {
+    public static function get_course_format_option_value($sectionid, $courseid) {
         global $DB;
         $field = $DB->get_field('course_format_options', 'value', array(
+                'courseid' => $courseid,
                 'format' => 'tiles',
                 'sectionid' => $sectionid,
                 'name' => 'tilephoto'
@@ -136,10 +138,10 @@ class tile_photo {
         $record = $this->get_course_format_option();
         if (!$record) {
             $record = new \stdClass();
-            $record->format = 'tiles';
-            $record->name = 'tilephoto';
             $record->courseid = $this->courseid;
+            $record->format = 'tiles';
             $record->sectionid = $this->sectionid;
+            $record->name = 'tilephoto';
             $record->value = $this->filename;
             $record->id = $DB->insert_record('course_format_options', $record, true);
         } else {
@@ -357,10 +359,10 @@ class tile_photo {
             $DB->delete_records(
                 'course_format_options',
                 array(
-                    'format' => 'tiles',
-                    'name' => 'tilephoto',
                     'courseid' => $this->courseid,
+                    'format' => 'tiles',
                     'sectionid' => $this->sectionid,
+                    'name' => 'tilephoto'
                 )
             );
         }
@@ -409,7 +411,7 @@ class tile_photo {
         global $DB;
         $records = $DB->get_records(
             'course_format_options',
-            array('format' => 'tiles', 'courseid' => $courseid, 'name' => 'tilephoto'),
+            array('courseid' => $courseid, 'format' => 'tiles', 'name' => 'tilephoto'),
             'sectionid',
             'sectionid'
         );
