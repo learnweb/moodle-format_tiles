@@ -638,8 +638,8 @@
     float: left;
 }
 .format-tiles .expand-collapse-all-btns {
-    right: 0;
-    position: absolute;
+    width: 100%;
+    text-align: right;
 }
 .format-tiles .expand-collapse-all-btns .btn-secondary {
     /*Adatpable theme*/
