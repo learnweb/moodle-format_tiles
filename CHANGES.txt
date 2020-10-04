@@ -192,6 +192,12 @@ Other
 - For courses which have a large number of sections as a result of the issue, do not display them all / show warning to editor.
 - On course sections which have too high a section number, display an error message to editors and suggest a fix.
 
-3.9.0.5 Beta (2020080606)
+3.9.0.5 Beta (2020080605)
 =========================
 - Fix typo on backup section count check
+
+3.9.0.6 R.C (2020080606)
+=========================
+- Release candidate
+- Align queries with index on course_format_options table
+- Minor fixes
