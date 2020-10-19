@@ -805,7 +805,7 @@ class format_tiles_external extends external_api
         $sectioninfo = $modinfo->get_section_info_all();
         $canviewhidden = has_capability('moodle/course:viewhiddensections', $context);
         $renderer = $PAGE->get_renderer('format_tiles');
-        $templateable = new \format_tiles\output\course_output($course, true, $params['sectionid']);
+        $templateable = new \format_tiles\output\course_output($course, true);
         $showprogressaspercent = $templateable->courseformatoptions['courseshowtileprogress'] == 2;
         // First add the info about the section and its availability.
         foreach ($sectionnums as $sectionnum) {
@@ -833,10 +833,14 @@ class format_tiles_external extends external_api
         $completionenabled = $course->enablecompletion && !isguestuser();
         if ($completionenabled) {
             foreach ($sections as $section) {
-                $completionthistile = $templateable->section_progress(
-                    $modinfo->sections[$section['sectionnum']],
-                    $modinfo->cms
-                );
+                if (isset($modinfo->sections[$section['sectionnum']])) {
+                    $completionthistile = $templateable->section_progress(
+                        $modinfo->sections[$section['sectionnum']],
+                        $modinfo->cms
+                    );
+                } else {
+                    $completionthistile = ['completed' => 0, 'outof' => 0];
+                }
                 $completiondata = $templateable->completion_indicator(
                     $completionthistile['completed'],
                     $completionthistile['outof'],
