@@ -236,7 +236,7 @@ if ($ADMIN->fulltree) {
         'format_tiles/jsmaxstoreditems',
         get_string('jsmaxstoreditems', 'format_tiles'),
         get_string('jsmaxstoreditems_desc', 'format_tiles'),
-        8,
+        0,
         $choices);
     $page->add($setting);
 
