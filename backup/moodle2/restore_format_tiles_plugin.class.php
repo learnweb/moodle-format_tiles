@@ -59,7 +59,6 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     }
 
     /**
-     * Creates a dummy path element in order to be able to execute code after restore.
      * Carries out some checks at start of course restore.
      *
      * @return restore_path_element[]
@@ -90,15 +89,10 @@ class restore_format_tiles_plugin extends restore_format_plugin {
      * Issue 45.
      * If incompatible Moodle 3.7 version of Tiles plugin was used in Moodle 3.9, incorrectly numbered sections may exist.
      * To avoid creating a empty sections on import or restore, check for incorrect sections and throw error if found.
-     * @throws dml_exception
      * @throws moodle_exception
      */
     private function fail_if_course_includes_excess_sections() {
-        $maxsectionsconfig = get_config('moodlecourse', 'maxsections');
-        if (!isset($maxsectionsconfig) || !is_numeric($maxsectionsconfig)) {
-            $maxsectionsconfig = 52;
-        }
-        $maxallowed = $maxsectionsconfig + 1;// We allow +1 as sec zero not counted.
+        $maxallowed = \format_tiles\course_section_manager::get_max_sections();
 
         // Get the sections from the backup and check them one by one.
         $backupinfo = $this->step->get_task()->get_info();
@@ -109,7 +103,7 @@ class restore_format_tiles_plugin extends restore_format_plugin {
             $included = $this->get_setting_value('section_' . $sectionid . '_included');
             if ($included) {
                 $sectionnum = (int)$section->title;
-                if ($sectionnum > $maxallowed) {
+                if ($sectionnum > $maxallowed + 1) {
                     // Allowing this section would mean we had some secs with sec numbers too high - disallow.
                     $a = new stdClass();
                     $a->sectionnum = $sectionnum;
@@ -118,7 +112,7 @@ class restore_format_tiles_plugin extends restore_format_plugin {
                     throw new moodle_exception('restoreincorrectsections', 'format_tiles', '', $a);
                 } else {
                     $totalincluded++;
-                    if ($totalincluded > $maxallowed) {
+                    if ($totalincluded > $maxallowed + 1) {
                         // Allowing this section would mean we have too many secs - disallow.
                         $a = new stdClass();
                         $a->numsections = $totalincluded;
@@ -132,10 +126,60 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     }
 
     /**
+     * Check the destination course does not have a section number more than the max.
+     * If it does, we cannot allow the restore.
+     * @return bool
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    private function check_destination_course_section_count() {
+        global $DB, $SESSION;
+        $maxallowed = \format_tiles\course_section_manager::get_max_sections();
+        $courseid = $this->step->get_task()->get_courseid();
+        $sessionvar = 'restore_dest_check_' . $courseid;
+        if (isset($SESSION->$sessionvar) && $SESSION->$sessionvar > strtotime('2 minutes ago')) {
+            // We've already done this very recently (probably in the same restore process) so don't need to do it now.
+            return true;
+        }
+        $SESSION->$sessionvar = time();
+
+        $maxsection = $DB->get_field('course_sections', 'MAX(section)',  array('course' => $courseid));
+
+        if ($maxsection && $maxsection > $maxallowed + 1) {
+
+            // If user is admin, when we throw error, we offer them a button to delete excess sections.
+            $isadmin = has_capability('moodle/site:config', \context_system::instance());
+            if ($isadmin) {
+                $admintoolsurl = \format_tiles\course_section_manager::get_list_problem_courses_url();
+                $admintoolsbutton = \html_writer::link(
+                    $admintoolsurl,
+                    get_string('checkforproblemcourses', 'format_tiles'),
+                    array('class' => 'btn btn-secondary ml-2')
+                );
+            } else {
+                $admintoolsurl = '';
+                $admintoolsbutton = '';
+            }
+            $a = new stdClass();
+            $a->sectionnum = $maxsection;
+            $a->maxallowed = $maxallowed;
+            \core\notification::error(get_string('restoreincorrectsections', 'format_tiles', $a) . $admintoolsbutton);
+            throw new moodle_exception('restorefailed', 'format_tiles', $admintoolsurl, $a);
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Ensure that we include photo background images in our restore structure.
      * @return array
      */
     public function define_section_plugin_structure() {
+
+        // We have to put this here as otherwise we don't seem to have a way of making sure it is done on import as well as restore.
+        $this->check_destination_course_section_count();
+
         $this->add_related_files('format_tiles', 'tilephoto', null);
         // Dummy path element is needed in order for after_restore_section() to be called.
         return [new restore_path_element('dummy_section', $this->get_pathfor('/dummysection'))];

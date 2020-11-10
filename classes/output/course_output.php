@@ -453,7 +453,8 @@ class course_output implements \renderable, \templatable
                         $a = new \stdClass();
                         $a->max = $maxallowedsections;
                         $a->tilename = $previoustiletitle;
-                        \core\notification::error(get_string('coursetoomanysections', 'format_tiles', $a));
+                        $button = \format_tiles\course_section_manager::get_schedule_button($this->course->id);
+                        \core\notification::error(get_string('coursetoomanysections', 'format_tiles', $a) . $button);
                         $sectioncountwarningissued = true;
                     }
                     if ($countincludedsections > $maxallowedsections * 2) {

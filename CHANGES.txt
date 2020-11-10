@@ -196,8 +196,12 @@ Other
 =========================
 - Fix typo on backup section count check
 
-3.9.0.6 R.C (2020080606)
+3.9.0.6 (2020080606)
 =========================
-- Release candidate
 - Align queries with index on course_format_options table
 - Minor fixes
+
+3.9.0.7 (2020080607)
+=========================
+- Bug fixes
+- Add experimental tool to enable site admin to delete empty tiles in bulk.

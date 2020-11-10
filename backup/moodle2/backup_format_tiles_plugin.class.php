@@ -77,12 +77,23 @@ class backup_format_tiles_plugin extends backup_format_plugin {
      */
     private function fail_if_course_includes_excess_sections() {
         global $DB;
-        $maxsectionsconfig = get_config('moodlecourse', 'maxsections');
-        if (!isset($maxsectionsconfig) || !is_numeric($maxsectionsconfig)) {
-            $maxsectionsconfig = 52;
-        }
+        $maxsectionsconfig = \format_tiles\course_section_manager::get_max_sections();
         $maxallowed = $maxsectionsconfig + 1;// We +1 as sec zero not counted.
         $courseid = $this->step->get_task()->get_courseid();
+
+        // If user is admin, when we throw error, we offer them a button to delete excess sections.
+        $isadmin = has_capability('moodle/site:config', \context_system::instance());
+        if ($isadmin) {
+            $admintoolsurl = \format_tiles\course_section_manager::get_list_problem_courses_url();
+            $admintoolsbutton = \html_writer::link(
+                $admintoolsurl,
+                get_string('checkforproblemcourses', 'format_tiles'),
+                array('class' => 'btn btn-secondary ml-2')
+            );
+        } else {
+            $admintoolsurl = '';
+            $admintoolsbutton = '';
+        }
 
         // Get the course sections from the database for the course we are backing up and check them.
         $countsections = $DB->get_field('course_sections', 'COUNT(id)',  array('course' => $courseid));
@@ -90,9 +101,9 @@ class backup_format_tiles_plugin extends backup_format_plugin {
             // Course has a very high number of sections, so fail early as probably en error and we avoid further work.
             $a = new stdClass();
             $a->numsections = $countsections;
-            $a->maxallowed = $maxallowed;
-            \core\notification::error(get_string('restoretoomanysections', 'format_tiles', $a));
-            throw new moodle_exception('restoretoomanysections', 'format_tiles', '', $a);
+            $a->maxallowed = $maxsectionsconfig;
+            \core\notification::error(get_string('restoretoomanysections', 'format_tiles', $a) . $admintoolsbutton);
+            throw new moodle_exception('backupfailed', 'format_tiles', $admintoolsurl);
         }
 
         $sections = $DB->get_records('course_sections', array('course' => $courseid), 'id ASC, section ASC',
@@ -108,18 +119,18 @@ class backup_format_tiles_plugin extends backup_format_plugin {
                     // Allowing this section would mean we had some secs with sec numbers too high - disallow.
                     $a = new stdClass();
                     $a->sectionnum = $section->section;
-                    $a->maxallowed = $maxallowed;
-                    \core\notification::error(get_string('restoreincorrectsections', 'format_tiles', $a));
-                    throw new moodle_exception('restoreincorrectsections', 'format_tiles', '', $a);
+                    $a->maxallowed = $maxsectionsconfig;
+                    \core\notification::error(get_string('restoreincorrectsections', 'format_tiles', $a) . $admintoolsbutton);
+                    throw new moodle_exception('backupfailed', 'format_tiles', $admintoolsurl);
                 } else {
                     $totalincluded++;
                     if ($totalincluded > $maxallowed) {
                         // Allowing this section to go in the backup would mean we have too many secs - disallow.
                         $a = new stdClass();
                         $a->numsections = $totalincluded;
-                        $a->maxallowed = $maxallowed;
-                        \core\notification::error(get_string('restoretoomanysections', 'format_tiles', $a));
-                        throw new moodle_exception('restoretoomanysections', 'format_tiles', '', $a);
+                        $a->maxallowed = $maxsectionsconfig;
+                        \core\notification::error(get_string('restoretoomanysections', 'format_tiles', $a) . $admintoolsbutton);
+                        throw new moodle_exception('backupfailed', 'format_tiles', $admintoolsurl);
                     }
                 }
             }

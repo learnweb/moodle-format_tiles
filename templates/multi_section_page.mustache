@@ -106,6 +106,10 @@
                         </a>
                 {{/outofsequencetilewarnings}}
             </ul>
+            <a class="btn btn-secondary" data-action="collaspse-all" title="{{#str}}fixproblems, format_tiles{{/str}}"
+               href="{{{config.wwwroot}}}/course/view.php?id={{courseid}}&action=reordersections&sesskey={{sesskey}}">
+                {{#str}}fixproblems, format_tiles{{/str}}
+            </a>
         </div>
     {{/hasoutofsequencetiles}}
 {{/isediting}}

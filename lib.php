@@ -440,7 +440,7 @@ class format_tiles extends format_base {
             $courseconfig = get_config('moodlecourse');
             $max = $courseconfig->maxsections;
             if (!isset($max) || !is_numeric($max)) {
-                $max = 52;
+                $max = \format_tiles\course_section_manager::get_max_sections();
             }
             $sectionmenu = array();
             for ($i = 0; $i <= $max; $i++) {

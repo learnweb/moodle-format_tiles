@@ -65,6 +65,11 @@ if ($isediting) {
         format_tiles_convert_label_to_page($cmid, $course);
     }
 
+    if (optional_param('action', '', PARAM_TEXT) === 'reordersections') {
+        require_sesskey();
+        \format_tiles\course_section_manager::resolve_section_misnumbering($course->id);
+        redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
+    }
     // Check if we need to change any session params for teachers expanded section preferences.
     if (optional_param('expanded', 0, PARAM_INT) == 1) {
         // User is expanding all sections in course on command.
