@@ -201,7 +201,7 @@ class course_section_manager {
         return $DB->get_records_sql(
             "SELECT * FROM {course_sections}
                             WHERE course = :courseid AND section >= :startatsection
-                            AND name is NULL AND sequence IS NULL
+                            AND name is NULL AND (sequence IS NULL OR sequence = '')
                             AND availability IS NULL
                             ORDER BY section DESC",
             array('courseid' => $courseid, 'startatsection' => $startatsection)

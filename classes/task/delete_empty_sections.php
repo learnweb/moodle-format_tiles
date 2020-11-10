@@ -62,7 +62,7 @@ class delete_empty_sections extends \core\task\adhoc_task {
                 mtrace(' - starting course ' . $courseid);
 
                 $coursecontext = \context_course::instance($courseid);
-                $emptysections = $this->get_empty_sections($courseid, $startatsection);
+                $emptysections = course_section_manager::get_empty_sections($courseid, $startatsection);
 
                 $countsections = count($emptysections);
                 mtrace(
@@ -72,7 +72,7 @@ class delete_empty_sections extends \core\task\adhoc_task {
                 $deletedsectioncount = 0;
                 if ($countsections >= 0) {
                     // Unset the config now, before we start, so that we don't try this section again even if something goes wrong.
-                    unset_config('delete_empty_sections_' . $courseid, 'format_tiles');
+                    course_section_manager::cancel_empty_sec_deletion($courseid);
 
                     foreach ($emptysections as $section) {
                         if ($CFG->debugdeveloper) {
