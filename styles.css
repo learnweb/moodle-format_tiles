@@ -79,7 +79,10 @@
     text-decoration: none;
     padding: 7px 10px 5px 10px;
 }
-
+.format-tiles .tile a .availabilityinfo,
+.format-tiles .availabilityinfo .badge {
+    color: #fff;
+}
 .format-tiles .progress-indic {
     display: inline-block;
     color: #999;
@@ -923,7 +926,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 .format-tiles li.section .availabilityinfo {
     margin-left: 3em;
 }
-.format-tiles .availabilityinfo.isstealth .tag {
+.format-tiles .availabilityinfo.isstealth .badge {
     font-size: 0.6em;
 }
 .format-tiles .hidden #hiddeneye {
@@ -1816,6 +1819,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     bottom: 10px;
     right: 0;
 }
+
 /*Alternate styles for previous phototile items ("altstyle")*/
 .format-tiles .course-content ul.tiles .tile.phototile.altstyle .photo-tile-text {
     bottom: 0;
