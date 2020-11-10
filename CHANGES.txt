@@ -205,3 +205,5 @@ Other
 =========================
 - Bug fixes
 - Add experimental tool to enable site admin to delete empty tiles in bulk.
+- Minor improvements to 'restricted' tags incl for Moodle 3.10
+- Tests - avoid deprecation warnings for PHP9

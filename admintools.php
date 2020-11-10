@@ -28,6 +28,8 @@ global $PAGE, $DB, $OUTPUT;
 
 require_login();
 $systemcontext = context_system::instance();
+
+// Admins only for this page.
 if (!has_capability('moodle/site:config', $systemcontext)) {
     throw new moodle_exception('You do not have permission to perform this action.');
 }
