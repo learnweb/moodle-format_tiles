@@ -64,12 +64,12 @@
                     {{#hidden}}
                         {{#pix}}eye-slash, format_tiles, {{#str}}hidden, format_tiles{{/str}}{{/pix}}
                     {{/hidden}}
-                    {{#restricted}}
+                    {{#restricted}}{{^progress}}
                         {{#pix}}lock, format_tiles, {{#str}}restricted{{/str}}{{/pix}}
-                    {{/restricted}}
-                    {{#progress}}
+                    {{/progress}}{{/restricted}}
+                    {{#progress}}{{^hidden}}
                         {{> format_tiles/progress}}
-                    {{/progress}}
+                    {{/hidden}}{{/progress}}
                 </div>
             </div>
             <div class="tile-text" id="tileText-{{tileid}}"

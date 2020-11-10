@@ -1811,9 +1811,10 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles ul.tiles .tile.phototile .tile-text {
     margin-top: 35px;
 }
-.format-tiles li.tile.phototile  .availabilityinfo {
+.format-tiles li.tile.phototile .availabilityinfo {
     position: absolute;
     bottom: 10px;
+    right: 0;
 }
 /*Alternate styles for previous phototile items ("altstyle")*/
 .format-tiles .course-content ul.tiles .tile.phototile.altstyle .photo-tile-text {

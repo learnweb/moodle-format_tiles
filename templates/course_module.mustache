@@ -122,7 +122,7 @@
                           id="label_content_{{cmid}}">{{{content}}}</span>
                 {{/clickable}}
                 {{#availabilitymessage}}
-                    {{>format_tiles/availability_info}}
+                   {{{availabilitymessage}}}
                 {{/availabilitymessage}}
             {{/is_label}}
 
@@ -204,7 +204,8 @@
                 <div class="contentafterlink">
                     {{#availabilitymessage}}
                         {{#stealth}}{{{availabilitymessage}}}{{/stealth}}
-                        {{^stealth}}{{>format_tiles/availability_info}}{{/stealth}}
+                        {{^useSubtiles}}{{{availabilitymessage}}}{{/useSubtiles}}
+                        {{^stealth}}{{#useSubtiles}}{{>format_tiles/availability_info}}{{/useSubtiles}}{{/stealth}}
                     {{/availabilitymessage}}
                 </div>
             {{/is_label}}
