@@ -233,7 +233,10 @@ function list_problem_courses() {
         $o .= html_writer::div(get_string('maxcoursesectionsallowed', 'format_tiles', $maxsections));
         $o .= html_writer::table($table);
     } else {
-        $o .= get_string('noproblemsfound', 'format_tiles');
+        $o .= html_writer::div(
+            get_string('noproblemsfound', 'format_tiles'),
+            'alert alert-success'
+        );
     }
     return $o;
 }
