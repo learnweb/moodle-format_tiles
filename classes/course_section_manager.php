@@ -44,7 +44,7 @@ class course_section_manager {
         $maxsections = self::get_max_sections();
 
         $count = $DB->count_records('course_sections', array('course' => $courseid));
-        if ($count > $maxsections) {
+        if ($count > $maxsections + 1) {
             debugging('Too many sections to re-order', DEBUG_DEVELOPER);
             return false;
         }
