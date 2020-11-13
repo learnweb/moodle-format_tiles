@@ -58,5 +58,6 @@ class deferred_register extends \core\task\adhoc_task {
             mtrace("Failed to complete deferred registration");
             mtrace($ex->getMessage());
         }
+        return false;
     }
 }

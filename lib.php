@@ -437,15 +437,7 @@ class format_tiles extends format_base {
         if ($foreditform && !isset($courseformatoptions['coursedisplay']['label'])) {
             $tilespalette = $this->format_tiles_get_tiles_palette();
             $tileicons = (new \format_tiles\icon_set)->available_tile_icons($this->get_courseid());
-            $courseconfig = get_config('moodlecourse');
-            $max = $courseconfig->maxsections;
-            if (!isset($max) || !is_numeric($max)) {
-                $max = \format_tiles\course_section_manager::get_max_sections();
-            }
-            $sectionmenu = array();
-            for ($i = 0; $i <= $max; $i++) {
-                $sectionmenu[$i] = "$i";
-            }
+
             $courseformatoptionsedit = array(
                 'hiddensections' => array(
                     'label' => new lang_string('hiddensections'),
@@ -738,7 +730,7 @@ class format_tiles extends format_base {
             $coursecontext = context_course::instance($courseid);
 
             if (has_capability('moodle/course:update', $coursecontext)) {
-                if ($oldcourse['format'] !== 'tiles' && $oldcourse['format'] !== 'tiles') {
+                if ($oldcourse['format'] !== 'tiles') {
                     // We are switching in to tiles from something else.
                     // Double check we don't have any old tiles images in the {files} table.
                     format_tiles\tile_photo::delete_all_tile_photos_course($courseid);

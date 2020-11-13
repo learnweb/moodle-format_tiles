@@ -68,7 +68,7 @@ if ($mform->is_cancelled()) {
     $serverresponse = $registrationmanager::make_curl_request($data, 3);
     $result = $registrationmanager::parse_server_response($registrationmanager::process_data($serverresponse));
     if ($result && $result['status'] && registration_manager::validate_key($result['key'])) {
-        $registrationmanager->set_registered($result['key']);
+        $registrationmanager->set_registered();
         unset_config('lastregistrationattempt', 'format_tiles');
         redirect($settingsurl);
     } else {

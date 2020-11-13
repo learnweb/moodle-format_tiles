@@ -174,6 +174,9 @@ class restore_format_tiles_plugin extends restore_format_plugin {
     /**
      * Ensure that we include photo background images in our restore structure.
      * @return array
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
     public function define_section_plugin_structure() {
 

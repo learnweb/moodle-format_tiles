@@ -155,7 +155,7 @@ if ($mform->is_cancelled()) {
                     \core\notification::success(
                         get_string('imagesavedfor', 'format_tiles', "'" . $sectionname . "'")
                     );
-                };
+                }
                 $tempfile->delete();
             } catch (Exception $e) {
                 debugging('Cannot set file', DEBUG_DEVELOPER);

@@ -476,8 +476,7 @@ class format_tiles_external extends external_api
         self::validate_context($coursecontext);
 
         course_view(context_course::instance($courseid), $sectionid);
-        $result = array('status' => true, 'warnings' => []);
-        return $result;
+        return array('status' => true, 'warnings' => []);
     }
 
     /**
@@ -650,7 +649,7 @@ class format_tiles_external extends external_api
                     ""
                 );
             }
-        };
+        }
         $data = array(
             'status' => true,
             'warnings' => [],

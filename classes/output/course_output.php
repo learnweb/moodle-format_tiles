@@ -200,7 +200,7 @@ class course_output implements \renderable, \templatable
             $data['showJScancelLink'] = 1;
         } else {
             $data['showJScancelLink'] = 0;
-        };
+        }
         $data['isediting'] = $this->isediting;
         $data['sesskey'] = sesskey();
         $data['showinitialpageloadingicon'] = format_tiles_width_template_data($this->course->id)['hidetilesinitially'];
@@ -222,36 +222,6 @@ class course_output implements \renderable, \templatable
         $data['outofsequencetilewarnings'] = [];
         $data['hasoutofsequencetiles'] = false;
         return $data;
-    }
-
-    /**
-     * Export the course data for the mustache template.
-     * @param \renderer_base $output
-     * @param array $cmids the course module ids for the cms to export.
-     * @return array|\stdClass
-     * @throws \coding_exception
-     * @throws \dml_exception
-     * @throws \moodle_exception
-     */
-    public function export_for_template_cms_only(\renderer_base $output, $cmids) {
-        $data = $this->get_basic_data($output);
-        if (!$this->fromajax) {
-            throw new \invalid_parameter_exception("Allowed from AJAX only");
-        }
-        if (is_numeric($this->sectionnum)) {
-            if (!isset($this->modinfo->sections[$this->sectionnum])) {
-                debugging("Section not in course " . $this->sectionnum);
-                return [];
-            } else {
-                $section = $this->modinfo->get_section_info($this->sectionnum);
-                $data['coursemodules'] = $this->section_course_mods($section, $output);
-                return $data;
-            }
-        } else {
-            // We have a list of cmids to process instead;
-            // TODO fix this.
-            throw BadMethodCallException("Not yet implemented");
-        }
     }
 
     /**
@@ -1035,7 +1005,7 @@ class course_output implements \renderable, \templatable
                     );
                     rebuild_course_cache($mod->course, true);
                 }
-            };
+            }
         }
 
         if ($mod->modname == 'url') {

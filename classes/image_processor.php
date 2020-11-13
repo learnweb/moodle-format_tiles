@@ -91,7 +91,7 @@ class image_processor
             } else {
                 debugging('imagecannotbeused', 'format_tiles', DEBUG_DEVELOPER);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (isset($tempfile)) {
                 unset($tempfile);
             }
@@ -234,8 +234,8 @@ class image_processor
                         'filters' => PNG_NO_FILTER,
                         'quality' => 1
                     );
-                    break;
                 }
+                break;
             case 'image/jpeg':
                 if (function_exists('imagejpeg')) {
                     return array(
@@ -243,8 +243,8 @@ class image_processor
                         'filters' => null,
                         'quality' => 90
                     );
-                    break;
                 }
+                break;
             case 'image/webp':
                 if (function_exists('imagewebp')) {
                     return array(
@@ -252,8 +252,8 @@ class image_processor
                         'filters' => null,
                         'quality' => 90
                     );
-                    break;
                 }
+                break;
             case 'image/gif':
                 if (function_exists('imagegif')) {
                     return array(
@@ -261,12 +261,13 @@ class image_processor
                         'filters' => null,
                         'quality' => null
                     );
-                    break;
                 }
+                break;
             default:
-                debugging('Mime type \''.$mime.'\' is not supported as an image format. PNG, JPEG and GIF are supported. '
-                    . 'The GD PHP extension should be installed.');
-                return false;
+                break;
         }
+        debugging('Mime type \''.$mime.'\' is not supported as an image format. PNG, JPEG and GIF are supported. '
+            . 'The GD PHP extension should be installed.');
+        return false;
     }
 }
