@@ -958,7 +958,20 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     ];
                     str.get_strings(stringKeys).done(function (s) {
                         s.forEach(function(str, index) {
-                            stringStore[stringKeys[index].key] = str;
+                            if (str) {
+                                stringStore[stringKeys[index].key] = str;
+                            } else {
+                                stringStore[stringKeys[index].key] = 'Error.';
+                                require(["core/log"], function(log) {
+                                    log.debug(`Format tiles get_strings error ${index}`);
+                                    log.debug(s);
+                                });
+                            }
+                        });
+                    })
+                    .fail(function(err) {
+                        require(["core/log"], function(log) {
+                            log.debug(err);
                         });
                     });
 
