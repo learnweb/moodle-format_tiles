@@ -133,7 +133,7 @@ class registration_manager {
                 'CURLOPT_CONNECTTIMEOUT' => $timeout,
                 'CURLOPT_URL' => self::registration_server_url(),
                 'CURLOPT_CUSTOMREQUEST' => "POST",
-                'CURLOPT_RETURNTRANSFER', true
+                'CURLOPT_RETURNTRANSFER' => true
             )
         );
 
