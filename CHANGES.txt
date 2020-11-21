@@ -215,3 +215,8 @@ Other
 3.9.0.9 (2020080609)
 ====================
 - Minor refactoring and tidying
+
+3.9.0.10 (2020080610)
+====================
+- Improve YouTube and Vimeo URL recognition
+- Minor CSS change for editors
