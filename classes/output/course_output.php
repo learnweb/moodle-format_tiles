@@ -1374,28 +1374,26 @@ class course_output implements \renderable, \templatable
     /**
      * If the URL is a YouTube or Vimeo URL etc, make some adjustments for embedding.
      * Teacher probably used standard watch URL so fix it if so.
-     * @param string $originalurl
+     * @param string $url
      * @return string|boolean string the URL if it was en embed video URL, false if not.
      */
-    private function check_modify_embedded_url($originalurl) {
-        $modifiedurl = $originalurl;
-        // Remove http:// or https:// etc.
-        $removeprefixes = ["http://www.", "https://www.", "http://", "https://"];
-        foreach ($removeprefixes as $prefix) {
-            $modifiedurl = str_replace($prefix, "", $modifiedurl);
+    private function check_modify_embedded_url(string $url) {
+        // Youtube.
+        $matches = null;
+        $pattern  = '/^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_]+)$/';
+        preg_match($pattern, $url, $matches);
+        if ($matches && isset($matches[7])) {
+            return 'https://www.youtube.com/embed/' . $matches[7];
         }
-        $modifiedurl = explode("/", $modifiedurl);
-        $domain = $modifiedurl[0];
-        if (strpos($domain, "youtube.") === 0 && isset($modifiedurl[1])
-            && strpos($modifiedurl[1], 'watch?v=') === 0) {
-            // We have a YouTube watch URL.
-            return str_replace('/watch?v=', '/embed/', $originalurl);
-        } else if (strpos($domain, "vimeo.") === 0
-            && isset($modifiedurl[1]) && is_numeric($modifiedurl[1])) {
-            // We have a Vimeo URL.
-            // Change https://vimeo.com/12345678 format to https://player.vimeo.com/video/12345678.
-            return "https://player.vimeo.com/video/" . $modifiedurl[1];
+
+        // Vimeo.
+        $matches = null;
+        $pattern  = '/^(https?:\/\/)?(www.)?(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*$/';
+        preg_match($pattern, $url, $matches);
+        if ($matches && isset($matches[5])) {
+            return 'https://player.vimeo.com/video/' . $matches[5];
         }
+
         return false;
     }
 }
