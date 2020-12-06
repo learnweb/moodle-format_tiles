@@ -730,14 +730,14 @@ class format_tiles extends format_base {
             $coursecontext = context_course::instance($courseid);
 
             if (has_capability('moodle/course:update', $coursecontext)) {
-                if ($oldcourse['format'] !== 'tiles') {
+                if ($oldcourse !== null && $oldcourse['format'] !== 'tiles') {
                     // We are switching in to tiles from something else.
                     // Double check we don't have any old tiles images in the {files} table.
                     format_tiles\tile_photo::delete_all_tile_photos_course($courseid);
                 }
 
                 // If we are changing from Grid format, we iterate through each of the grid images and set it up for this format.
-                if ($oldcourse['format'] == 'grid') {
+                if ($oldcourse !== null && $oldcourse['format'] == 'grid') {
                     $gridformaticons = $DB->get_records('format_grid_icon', array('courseid' => $courseid), 'sectionid');
                     $fs = get_file_storage();
                     foreach ($gridformaticons as $gridformaticon) {
