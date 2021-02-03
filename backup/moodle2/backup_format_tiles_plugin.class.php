@@ -77,9 +77,13 @@ class backup_format_tiles_plugin extends backup_format_plugin {
      */
     private function fail_if_course_includes_excess_sections() {
         global $DB;
+        $courseid = $this->step->get_task()->get_courseid();
+        $format = $DB->get_field('course', 'format', ['id' => $courseid]);
+        if ($format !== 'tiles') {
+            return;
+        }
         $maxsectionsconfig = \format_tiles\course_section_manager::get_max_sections();
         $maxallowed = $maxsectionsconfig + 1;// We +1 as sec zero not counted.
-        $courseid = $this->step->get_task()->get_courseid();
 
         // If user is admin, when we throw error, we offer them a button to delete excess sections.
         $isadmin = has_capability('moodle/site:config', \context_system::instance());

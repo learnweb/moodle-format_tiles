@@ -405,5 +405,5 @@ $string['highestsectionnum'] = 'Highest section number found';
 $string['checkforproblemcourses'] = 'Check for and fix problem courses';
 $string['noproblemsfound'] = 'No problems found';
 $string['backupfailed'] = 'Backup failed';
-$string['backupfailed'] = 'Restore failed';
+$string['restorefailed'] = 'Restore failed';
 $string['fixproblems'] = 'Fix problems';
