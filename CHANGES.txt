@@ -224,3 +224,8 @@ Other
 3.9.0.11 (2020080611)
 =====================
 - Fix issue running unit test
+
+3.9.0.12 (2020080612)
+=====================
+- Fix issue with integer section names causing backup error
+- Fix delete empty sections tool
