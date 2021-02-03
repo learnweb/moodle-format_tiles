@@ -38,7 +38,7 @@ class course_section_manager {
      * @param int $courseid
      */
     public static function resolve_section_misnumbering($courseid) {
-        global $DB;
+        global $DB, $CFG;
         // First check we don't have too many sections in the course.
         // We do not want to attempt a re-order if so, as may take too long.  (User must delete excess sections first).
         $maxsections = self::get_max_sections();
@@ -59,6 +59,7 @@ class course_section_manager {
 
         // Find if any section has a gap before it, and renumber course if one is found.
         if (count($sections) > 1) {
+            require_once($CFG->dirroot . '/course/lib.php'); // Require move_section_to().
             $previoussectionnumber = 0;
             foreach ($sections as $section) {
                 if ($section->section > $previoussectionnumber + 1) {
