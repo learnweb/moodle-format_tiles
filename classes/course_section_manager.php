@@ -59,7 +59,7 @@ class course_section_manager {
 
         // Find if any section has a gap before it, and renumber course if one is found.
         if (count($sections) > 1) {
-            require_once($CFG->dirroot . '/course/lib.php'); // Require move_section_to().
+            require_once($CFG->dirroot . '/course/lib.php'); // Require course lib for move_section_to() function.
             $previoussectionnumber = 0;
             foreach ($sections as $section) {
                 if ($section->section > $previoussectionnumber + 1) {

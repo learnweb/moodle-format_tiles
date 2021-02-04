@@ -271,7 +271,7 @@ class behat_format_tiles extends behat_base {
         $this->execute('behat_general::wait_until_the_page_is_ready');
         if ($this->running_javascript()) {
             $this->wait_for_pending_js();
-            $this->getSession()->wait(self::REDUCED_TIMEOUT * 1000);
+            $this->getSession()->wait(self::get_reduced_timeout() * 1000);
         }
         $this->execute("behat_general::i_click_on", array($this->escape($xpath), "xpath_element"));
     }
@@ -397,7 +397,7 @@ class behat_format_tiles extends behat_base {
         );
 
         if ($this->running_javascript()) {
-            $this->getSession()->wait(self::TIMEOUT * 1000, self::PAGE_READY_JS);
+            $this->getSession()->wait(self::get_timeout() * 1000, self::PAGE_READY_JS);
         }
     }
 

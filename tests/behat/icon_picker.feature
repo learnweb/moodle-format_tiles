@@ -59,19 +59,20 @@ Feature: Teacher can allocate icons to tiles
     And I wait until the page is ready
 
 #    // one title edit just to check we can after the above (this is also done elsewhere)
-    And I click on "Edit tile name" "link" in the "li#section-1" "css_element"
+    When I click on "Edit tile name" "link" in the "li#section-1" "css_element"
     And I set the field "New name for topic Tile 1" to "Setting up in business"
-    And I press key "13" in the field "New name for topic Tile 1"
+    And I press the enter key
     Then I should not see "Tile 1" in the "region-main" "region"
-    And "New name for topic" "field" should not exist
     And I should see "Setting up in business" in the "li#section-1" "css_element"
     And I am on "Business Law" course homepage
     And I should not see "Tile 1" in the "region-main" "region"
 
-    And I should see "Tile 2" in the "li#section-2" "css_element"
-    And I click on "Edit tile name" "link" in the "li#section-2" "css_element"
+    When I click on "Edit tile name" "link" in the "li#section-2" "css_element"
     And I set the field "New name for topic Tile 2" to "Directors' Duties"
-    And I press key "13" in the field "New name for topic Tile 2"
+    And I press the enter key
+    Then I should not see "Tile 2" in the "region-main" "region"
+    And I should see "Directors' Duties" in the "li#section-2" "css_element"
+    And I am on "Business Law" course homepage
 
     And I turn editing mode off
     And I wait until the page is ready
