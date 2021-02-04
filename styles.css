@@ -980,6 +980,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
 .format-tiles.editing .section .mod-indent-outer {
     max-width: calc(100% - 100px);
 }
+
 @media screen and (max-width: 680px) {
     .format-tiles li.activity.subtile {
         /* stylelint-disable-next-line declaration-no-important */
