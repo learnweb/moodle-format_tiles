@@ -233,3 +233,8 @@ Other
 3.9.0.13 (2020080613)
 =====================
 - Fix tests for Moodle 3.10
+
+3.9.0.14 (2020080614)
+=====================
+- Fix issue #61 Restricted activities / sections respond to clicks on others
+- Fix URL on out of sequence warning.

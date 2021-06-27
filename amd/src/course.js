@@ -904,6 +904,52 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                     }
 
+                    // If this event is triggered, user has updated a completion check box.
+                    // We need to retrieve section content from server in case availability of items has changed.
+                    $(document).on('format-tiles-completion-check-section', function(e, data) {
+                        const allSectionNums = $(Selector.TILE).not(Selector.SPACER).map((i, t) => {
+                            return parseInt($(t).attr('data-section'));
+                        }).toArray();
+                        const requests = ajax.call([
+                            {
+                                methodname: "format_tiles_get_single_section_page_html",
+                                args: {
+                                    courseid: courseId,
+                                    sectionid: data.section,
+                                    setjsusedsession: true
+                                }
+                            },
+                            {
+                                methodname: "format_tiles_get_section_information",
+                                args: {
+                                    courseid: courseId,
+                                    sectionnums: allSectionNums
+                                }
+                            }
+                        ]);
+                        requests[0]
+                            .done((response) => {
+                                setCourseContentHTML($(Selector.SECTION_ID + data.section), $(response.html).html());
+                            })
+                            .catch(err => {
+                                require(["core/log"], function(log) {
+                                    log.debug(err);
+                                });
+                            });
+                        requests[1]
+                            .done((response) => {
+                                require(["format_tiles/completion"], function (completion) {
+                                    completion.updateSectionInfo(response.sections);
+                                });
+
+                            })
+                            .catch(err => {
+                                require(["core/log"], function(log) {
+                                    log.debug(err);
+                                });
+                            });
+                    });
+
                     // When the user presses the button to collapse or expand Section zero (section at the top of the course).
                     pageContent.on(Event.CLICK, Selector.HIDE_SEC0_BTN, function (e) {
                         var sectionZero = $(Selector.SECTION_ZERO);

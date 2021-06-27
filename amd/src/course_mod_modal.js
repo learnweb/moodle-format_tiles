@@ -45,6 +45,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
 
         var Selector = {
             toggleCompletion: ".togglecompletion",
+            completionAuto: ".completion-auto",
             modal: ".modal",
             modalDialog: ".modal-dialog",
             modalBody: ".modal-body",
@@ -130,7 +131,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 modalRoot.attr("id", "embed_mod_modal_" + cmid);
                 modalRoot.attr("data-cmid", cmid);
                 modalRoot.addClass("embed_cm_modal");
-
+                const sectionNum = clickedCmObject.closest(Selector.sectionMain).attr("data-section");
                 // Render the modal body and set it to the page.
                 // First a blank template data object.
                 var templateData = {
@@ -140,7 +141,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     width: "100%",
                     height: Math.round(win.height() - 60), // Embedded object height in modal - make as high as poss.
                     cmid: cmid,
-                    tileid: clickedCmObject.closest(Selector.sectionMain).attr("data-section"),
+                    tileid: sectionNum,
                     isediting: 0,
                     sesskey: config.sesskey,
                     modtitle: clickedCmObject.attr("data-title"),
@@ -186,6 +187,10 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     templateData.completionstateInverse = inverseCompletionState;
                     templateData.completionIsManual = clickedCmObject
                         .find(Selector.toggleCompletion).attr("data-ismanual");
+                    // Trigger event to check if other items in course have updated availability.
+                    require(["format_tiles/completion"], function (completion) {
+                        completion.triggerSectionContentCheckEvent(sectionNum);
+                    });
                 }
                 Templates.render("format_tiles/embed_module_modal_header_btns", templateData).done(function (html) {
                     modalRoot.find(Selector.modalHeader).append(html);
@@ -224,6 +229,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
 
                 var modalWidth = Math.round(win.width() * 0.9);
                 var modalHeight = Math.round(win.height() * 0.9);
+                const sectionNum = clickedCmObject.closest(Selector.sectionMain).attr("data-section");
                 var templateData = {
                     id: cmid,
                     pluginfileUrl: clickedCmObject.attr("data-url"),
@@ -231,7 +237,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     width: modalWidth - 30,
                     height: modalHeight - 30,
                     cmid: cmid,
-                    tileid: clickedCmObject.closest(Selector.sectionMain).attr("data-section"),
+                    tileid: sectionNum,
                     isediting: 0,
                     sesskey: config.sesskey,
                     modtitle: clickedCmObject.attr("data-title"),
@@ -262,6 +268,10 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     templateData.completionstateInverse = inverseCompletionState;
                     templateData.completionIsManual = clickedCmObject
                         .find(Selector.toggleCompletion).attr("data-ismanual");
+                    // Trigger event to check if other items in course have updated availability.
+                    require(["format_tiles/completion"], function (completion) {
+                        completion.triggerSectionContentCheckEvent(sectionNum);
+                    });
                 }
                 Templates.render("format_tiles/embed_module_modal_header_btns", templateData).done(function (html) {
                     modalRoot.find(Selector.modalHeader).append(html);
@@ -367,9 +377,11 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         cmid: cmid
                     }
                 }])[0].done(function(response) {
+                    const sectionNum = clickedCmObject.closest(Selector.sectionMain).attr("data-section");
                     var templateData = {
                         cmid: cmid,
                         modtitle: clickedCmObject.attr("data-title"),
+                        tileid: sectionNum,
                         content: response.html
                     };
                     if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
@@ -382,6 +394,10 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         templateData.completionIsManual = clickedCmObject
                             .find(Selector.toggleCompletion).attr("data-ismanual");
                         templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
+                        // Trigger event to check if other items in course have updated availability.
+                        require(["format_tiles/completion"], function (completion) {
+                            completion.triggerSectionContentCheckEvent(sectionNum);
+                        });
                     } else {
                         templateData.completionInUseForCm = 0;
                     }
@@ -499,6 +515,14 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                                     cmid: clickedCmObject.attr("data-cmid")
                                 }
                                 }])[0].fail(Notification.exception);
+                        }
+                        // If we have an auto completion toggle on this item, trigger event.
+                        if (clickedCmObject.find(Selector.completionAuto).length !== 0) {
+                            require(["format_tiles/completion"], function (completion) {
+                                completion.triggerSectionContentCheckEvent(
+                                    clickedCmObject.closest(Selector.sectionMain).attr('data-section')
+                                );
+                            });
                         }
                     });
 

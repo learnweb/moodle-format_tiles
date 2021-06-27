@@ -1503,7 +1503,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     height: 30px;
     width: 30px;
     padding: 0;
-    margin-left: 10px;
 }
 .format-tiles .embed_cm_modal .embed_file_button,
 .format-tiles .modal-container .modal .modal-header button.close {

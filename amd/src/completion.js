@@ -187,7 +187,6 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                     });
                 }
             }
-
             var url = config.wwwroot + "/course/togglecompletion.php";
             $.post(url, data, function (returnData, status) {
                 if (status === "success" && returnData === "OK") {
@@ -270,6 +269,93 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
         };
 
         /**
+         * Trigger an event so that other JS modules can be notified to check completion status.
+         * Used to refresh section contents when completion is checked.
+         * Can also be used by other components e.g. blocks that show completion.
+         * @param {number} sectionNum the number of the section where completion changed.
+         */
+        const triggerSectionContentCheckEvent = function (sectionNum) {
+            $(document).trigger('format-tiles-completion-check-section', {
+                section: parseInt(sectionNum)
+            });
+        };
+
+        /**
+         * If we have called format_tiles_get_section_information then we need to add the result to the DOM.
+         * @param sections
+         */
+        const updateSectionInfo  = function(sections) {
+            sections.forEach(sec => {
+                const tile = $(Selector.tileId + sec.sectionnum);
+                // If this tile is now unrestricted / visible, give it the right classes.
+                if (sec.isavailable && tile.hasClass('tile-restricted')) {
+                    tile.removeClass('tile-restricted');
+                } else if (!sec.isavailable) {
+                    tile.addClass('tile-restricted');
+                }
+                if (sec.isclickable && !tile.hasClass('tile-clickable')) {
+                    tile.addClass('tile-clickable');
+                } else if (!sec.isclickable && tile.hasClass('tile-clickable')) {
+                    tile.removeClass('tile-clickable');
+                }
+
+                // Now re-render the progress indicator if necessary with correct data.
+                const progressIndicator = $(Selector.progressIndicatorId + sec.sectionnum);
+                if (progressIndicator.attr('data-numcomplete') !== undefined
+                    && progressIndicator.attr('data-numcomplete') !== sec.numcomplete.toString()) {
+                    Templates.render("format_tiles/progress", progressTemplateData(
+                        sec.sectionnum,
+                        sec.numcomplete,
+                        sec.numoutof,
+                        progressIndicator.hasClass("percent")
+                    )).done(function (html) {
+                        // Need to repeat jquery selector as it is being replaced (replacwith).
+                        progressIndicator.replaceWith(html);
+                        if (useTooltips) {
+                            try {
+                                $(Selector.progressIndicatorId + sec.sectionnum).tooltip();
+                            } catch (err) {
+                                require(["core/log"], function(log) {
+                                    log.debug(err);
+                                });
+                            }
+                        }
+                    });
+                }
+
+                // Finally change or re-render the availability message if necessary.
+                const availabilityInfoDiv = tile.find(Selector.availabilityinfo);
+                if (availabilityInfoDiv.length > 0 && sec.isavailable && !sec.availabilitymessage) {
+                    // Display no message any more.
+                    availabilityInfoDiv.fadeOut();
+                } else if (!sec.isavailable && sec.availabilitymessage) {
+                    // Sec is not available and we have a message to display.
+                    if (availabilityInfoDiv.length > 0) {
+                        availabilityInfoDiv.html = 'NEW' + sec.availabilitymessage;
+                        availabilityInfoDiv.fadeIn();
+                    } else {
+                        Templates.render("format_tiles/availability_info", {
+                            availabilitymessage: sec.availabilitymessage,
+                            visible: true
+                        }).done(function (html) {
+                            // Need to repeat jquery selector as it is being replaced (replacwith).
+                            progressIndicator.replaceWith(html);
+                            if (useTooltips) {
+                                try {
+                                    $(Selector.progressIndicatorId + sec.sectionnum).tooltip();
+                                } catch (err) {
+                                    require(["core/log"], function(log) {
+                                        log.debug(err);
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        };
+
+        /**
          * Sometimes we must check the availability and completion status of/some all tiles using AJAX.
          * This might happen if for example a tile expands and some embedded activities are then complete.
          * Other tiles might use the completion of a previous tile for their availability.
@@ -289,88 +375,17 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                     courseid: courseId,
                     sectionnums: sectionNums
                 }
-            }]).forEach(promise => {
-                promise
-                    .then(res => {
-                        res.sections.forEach(sec => {
-                            const tile = $(Selector.tileId + sec.sectionnum);
-
-                            // If this tile is now unrestricted / visible, give it the right classes.
-                            if (sec.isavailable && tile.hasClass('tile-restricted')) {
-                                tile.removeClass('tile-restricted');
-                            } else if (!sec.isavailable) {
-                                tile.addClass('tile-restricted');
-                            }
-                            if (sec.isclickable && !tile.hasClass('tile-clickable')) {
-                                tile.addClass('tile-clickable');
-                            } else if (!sec.isclickable && tile.hasClass('tile-clickable')) {
-                                tile.removeClass('tile-clickable');
-                            }
-
-                            // Now re-render the progress indicator if necessary with correct data.
-                            const progressIndicator = $(Selector.progressIndicatorId + sec.sectionnum);
-                            if (progressIndicator.attr('data-numcomplete') !== undefined
-                                && progressIndicator.attr('data-numcomplete') !== sec.numcomplete.toString()) {
-                                Templates.render("format_tiles/progress", progressTemplateData(
-                                    sec.sectionnum,
-                                    sec.numcomplete,
-                                    sec.numoutof,
-                                    progressIndicator.hasClass("percent")
-                                )).done(function (html) {
-                                    // Need to repeat jquery selector as it is being replaced (replacwith).
-                                    progressIndicator.replaceWith(html);
-                                    if (useTooltips) {
-                                        try {
-                                            $(Selector.progressIndicatorId + sec.sectionnum).tooltip();
-                                        } catch (err) {
-                                            require(["core/log"], function(log) {
-                                                log.debug(err);
-                                            });
-                                        }
-                                    }
-                                });
-                            }
-
-                            // Finally change or re-render the availability message if necessary.
-                            const availabilityInfoDiv = tile.find(Selector.availabilityinfo);
-                            if (availabilityInfoDiv.length > 0 && sec.isavailable && !sec.availabilitymessage) {
-                                // Display no message any more.
-                                availabilityInfoDiv.fadeOut();
-                            } else if (!sec.isavailable && sec.availabilitymessage) {
-                                // Sec is not available and we have a message to display.
-                                if (availabilityInfoDiv.length > 0) {
-                                    availabilityInfoDiv.html = 'NEW' + sec.availabilitymessage;
-                                    availabilityInfoDiv.fadeIn();
-                                } else {
-                                    Templates.render("format_tiles/availability_info", {
-                                        availabilitymessage: sec.availabilitymessage,
-                                        visible: true
-                                    }).done(function (html) {
-                                        // Need to repeat jquery selector as it is being replaced (replacwith).
-                                        progressIndicator.replaceWith(html);
-                                        if (useTooltips) {
-                                            try {
-                                                $(Selector.progressIndicatorId + sec.sectionnum).tooltip();
-                                            } catch (err) {
-                                                require(["core/log"], function(log) {
-                                                    log.debug(err);
-                                                });
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    })
-                    .catch(err => {
-                        require(["core/log"], function(log) {
-                            log.debug(
-                                "Failed to get section information to check completion status of section"
-                            );
-                            log.debug(err);
-                        });
+            }])[0].done((res) => {
+                    updateSectionInfo(res.sections);
+                })
+                .fail(err => {
+                    require(["core/log"], function(log) {
+                        log.debug(
+                            "Failed to get section information to check completion status of section"
+                        );
+                        log.debug(err);
                     });
-            });
+                });
         };
 
         return {
@@ -385,7 +400,9 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                     $("body").on("click", Selector.togglecompletion, function (e) {
                         // Send the toggle to the database and change the displayed icon.
                         e.preventDefault();
-                        toggleCompletionTiles($(e.currentTarget));
+                        const form = $(e.currentTarget);
+                        toggleCompletionTiles(form);
+                        triggerSectionContentCheckEvent(form.attr('data-section'));
                     });
 
                     var pageContent = $("#page-content");
@@ -416,6 +433,9 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                 courseId = courseIdInit;
                 markAsAutoCompleteInUI(activity);
             },
+            triggerSectionContentCheckEvent: function(sectionNum) {
+                triggerSectionContentCheckEvent(sectionNum);
+            },
             updateTileInformation: function(sectionNumbers) {
                 try {
                     updateTileInformation(sectionNumbers);
@@ -424,6 +444,9 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                         log.debug(err);
                     });
                 }
+            },
+            updateSectionInfo: function(sections) {
+                updateSectionInfo(sections);
             }
         };
     }

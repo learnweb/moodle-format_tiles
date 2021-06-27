@@ -902,10 +902,14 @@ class format_tiles_external extends external_api
                                 PARAM_INT,
                                 'Number of possible activities in this section for this user'
                             ),
-                            'percent' => new external_value(PARAM_INT, 'Percent complete'),
-                            'percentcircumf' => new external_value(PARAM_FLOAT, 'Circumference of radial indicator'),
-                            'percentoffset' => new external_value(PARAM_INT, 'Percent offset for radial indicator'),
-                            'iscomplete' => new external_value(PARAM_BOOL, 'Is the section complete'),
+                            'percent' => new external_value(PARAM_INT, 'Percent complete', VALUE_OPTIONAL, 0),
+                            'percentcircumf' => new external_value(
+                                PARAM_FLOAT, 'Circumference of radial indicator', VALUE_OPTIONAL, 0
+                            ),
+                            'percentoffset' => new external_value(
+                                PARAM_INT, 'Percent offset for radial indicator'. VALUE_OPTIONAL, 0
+                            ),
+                            'iscomplete' => new external_value(PARAM_BOOL, 'Is the section complete'. VALUE_OPTIONAL, false),
                             'isavailable' => new external_value(PARAM_BOOL, 'Is the section available (not restricted)'),
                             'isclickable' => new external_value(PARAM_BOOL, 'Is the section clickable / expandable'),
                             'availabilitymessage' => new external_value(PARAM_RAW, 'If the section is restricted, explains why')

@@ -88,7 +88,9 @@ class format_tiles extends format_base {
     public function get_section_name($section) {
         $section = $this->get_section($section);
         if ((string)$section->name !== '') {
-            return format_string($section->name, true,
+            // Allow user to insert zero width space in title using &#8203; to indicate where line should break with a hyphen.
+            // This is useful on tiles with long words in the title (e.g. German language).
+            return format_string(str_replace('&#8203;', '- ', $section->name), true,
                 array('context' => context_course::instance($this->courseid)));
         } else if ($section->section == 0) {
             return get_string('section0name', 'format_tiles');

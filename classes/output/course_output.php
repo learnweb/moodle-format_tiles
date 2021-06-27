@@ -945,7 +945,6 @@ class course_output implements \renderable, \templatable
             (!$mod->visible && !$mod->visibleold)
             || !$mod->available
             || !$section->visible
-            || (isset($moduleobject['availabilitymessage']) && strlen($moduleobject['availabilitymessage']) > 1 )
         ) {
             $moduleobject['extraclasses'] .= ' dimmed';
         }
@@ -966,8 +965,10 @@ class course_output implements \renderable, \templatable
                 $moduleobject['extraclasses'] .= " margin-rt";
                 // We need to change the right margin in CSS if the edit menu contains a separate groups item.
             }
-
-            $moduleobject['cmeditmenu'] = $this->courserenderer->course_section_cm_edit_actions($editactions, $mod);
+            $displayoptions = ['constraintselector' => '#multi_section_tiles'];
+            $moduleobject['cmeditmenu'] = $this->courserenderer->course_section_cm_edit_actions(
+                $editactions, $mod, $displayoptions
+            );
             $moduleobject['cmeditmenu'] .= $mod->afterediticons;
             if (!$this->treat_as_label($mod)) {
                 if (!$mod->visible || !$section->visible) {
