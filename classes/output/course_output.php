@@ -317,7 +317,7 @@ class course_output implements \renderable, \templatable
         }
 
         // Data for the requested section page.
-        $data['title'] = get_section_name($this->course, $thissection->section);
+        $data['title'] = $this->apply_linebreak_filter(get_section_name($this->course, $thissection->section), true);
         $data['summary'] = $output->format_summary_text($thissection);
         $data['tileid'] = $thissection->section;
         $data['secid'] = $thissection->id;
@@ -446,7 +446,9 @@ class course_output implements \renderable, \templatable
             $showsection = $section->uservisible ||
                 ($section->visible && !$section->available && !empty($section->availableinfo));
             if ($sectionnum != 0 && $showsection) {
-                $title = htmlspecialchars_decode($this->truncate_title(get_section_name($this->course, $sectionnum)));
+                $title = format_string(
+                    $this->truncate_title($this->apply_linebreak_filter(get_section_name($this->course, $sectionnum)))
+                );
                 if ($allowedphototiles && $usingphotoaltstyle && $isphototile) {
                     // Replace the last space with &nbsp; to avoid having one word on the last line of the tile title.
                     $title = preg_replace('/\s(\S*)$/', '&nbsp;$1', $title);
@@ -793,6 +795,31 @@ class course_output implements \renderable, \templatable
             $title = substr($title, 0, $lastspace) . ' ...';
         }
         return trim($title);
+    }
+
+    /**
+     * Allow user to insert a line break flag into very long tile titles i.e. '{{#linebreak}}'
+     * When encountered on a tile this is changed to - to allow the text to wrap.
+     * This is useful on tiles with long words in the title (e.g. German language).
+     * @param $text
+     * @param false $remove
+     * @return array|string|string[]
+     */
+    private function apply_linebreak_filter($text, $remove = false) {
+        $flag = '{{#linebreak}}';
+        if ($remove) {
+            // We don't want the flag or a line break (e.g. we are "in" a tile so have lots of space),
+            return str_replace($flag, '', $text);
+        }
+
+        $maxwidthfortilechars = 20;
+        if (strlen($text) > $maxwidthfortilechars) {
+            // If the title is long, we need to line break so replace flag with hyphen space.
+            return str_replace($flag, '- ', $text);
+        } else {
+            // If the title is short, we don't need to line break so delete the flag.
+            return str_replace($flag, '', $text);
+        }
     }
 
     /**
