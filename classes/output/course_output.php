@@ -934,19 +934,10 @@ class course_output implements \renderable, \templatable
                 $moduleobject['launchtype'] = 'resource-modal';
                 $moduleobject['pluginfileUrl'] = $this->plugin_file_url($mod);
             } else {
-                // We don't want to embed the file in a modal.
-                // If this is a mobile device or tablet, override the standard URL (already allocated above).
-                // Then user can access file natively in their device (better than embedded).
-                // Otherwise the standard URL will remain i.e. mod/resource/view.php?id=...
-                if ($this->devicetype == \core_useragent::DEVICETYPE_TABLET
-                    || $this->devicetype == \core_useragent::DEVICETYPE_MOBILE) {
-                    $moduleobject['url'] = $this->plugin_file_url($mod);
-                } else {
-                    // We are not using modal, so add the standard moodle onclick event to the link to launch pop up if appropriate.
-                    if ($onclick = $mod->onclick) {
-                        $moduleobject['onclick'] = str_replace('&amp;', '&', $mod->onclick);
-                        $moduleobject['launchtype'] = 'resource-popup';
-                    }
+                // We are not using modal, so add the standard moodle onclick event to the link to launch pop up if appropriate.
+                if ($mod->onclick) {
+                    $moduleobject['onclick'] = str_replace('&amp;', '&', $mod->onclick);
+                    $moduleobject['launchtype'] = 'resource-popup';
                 }
             }
         }
