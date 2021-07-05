@@ -1000,12 +1000,12 @@ class course_output implements \renderable, \templatable
                 }
                 $moduleobject['modtitle_inplaceeditable'] = array(
                     "displayvalue" => \html_writer::link($mod->url, $mod->get_formatted_name(), $attr),
-                    "value" => $mod->name,
+                    "value" => $mod->get_formatted_name(),
                     "itemid" => $mod->id,
                     "component" => "core_course",
                     "itemtype" => "activityname",
                     "edithint" => get_string('edit'),
-                    "editlabel" => get_string('newactivityname') . $mod->name,
+                    "editlabel" => get_string('newactivityname') . $mod->get_formatted_name(),
                     "type" => "text",
                     "options" => "",
                     "linkeverything" => 0

@@ -107,7 +107,7 @@
     data-modinstance="{{modinstance}}"
     {{#pluginfileUrl}}data-url="{{{pluginfileUrl}}}"{{/pluginfileUrl}}
     {{#secondaryurl}}data-url-secondary="{{{secondaryurl}}}"{{/secondaryurl}}
-    data-title="{{{modtitle}}}">
+    data-title="{{modtitle}}">
     <div{{#useSubtiles}}{{^is_label}} class="subtile_inner"{{/is_label}}{{/useSubtiles}} {{^useSubtiles}} class="mod-indent-outer"{{/useSubtiles}}>
         {{^useSubtiles}}
             {{#indentlevel}}
@@ -134,8 +134,8 @@
                                 {{#clickable}}
                                     {{#isEmbeddedResource}}
                                         <h4 class="activitytitle">
-                                            <a {{#extraclasses}}class="{{extraclasses}}"{{/extraclasses}} href="{{{url}}}" data-title="{{{modtitle}}}">
-                                                {{{modtitle}}}
+                                            <a {{#extraclasses}}class="{{extraclasses}}"{{/extraclasses}} href="{{{url}}}" data-title="{{modtitle}}">
+                                                {{modtitle}}
                                             </a>
                                         </h4>
                                     {{/isEmbeddedResource}}
@@ -143,12 +143,12 @@
                                     {{^isEmbeddedResource}}
                                     <h4 class="activitytitle">
                                         <a {{#extraclasses}}class="{{extraclasses}}"{{/extraclasses}}
-                                            {{#onclick}} onclick="{{onclick}}"{{/onclick}} href="{{url}}">{{{modtitle}}}</a>
+                                            {{#onclick}} onclick="{{onclick}}"{{/onclick}} href="{{url}}">{{modtitle}}</a>
                                     </h4>
                                     {{/isEmbeddedResource}}
                                 {{/clickable}}
                                 {{^clickable}}
-                                    <h4 class="activitytitle">{{{modtitle}}}</h4>
+                                    <h4 class="activitytitle">{{modtitle}}</h4>
                                 {{/clickable}}
                         </div>
                         {{#clickable}}<a class="clickable-region" href="{{url}}" data-action="launch-tiles-{{launchtype}}"{{#onclick}} onclick="{{onclick}}"{{/onclick}}></a>{{/clickable}}
@@ -160,7 +160,7 @@
                                 {{>format_tiles/inplace_editable}}
                             {{/modtitle_inplaceeditable}}
                             {{^modtitle_inplaceeditable}}
-                                {{{modtitle}}}
+                                {{modtitle}}
                             {{/modtitle_inplaceeditable}}
                         </div>
                     {{/isediting}}
@@ -173,7 +173,7 @@
                                 {{>format_tiles/inplace_editable}}
                             {{/modtitle_inplaceeditable}}
                             {{^modtitle_inplaceeditable}}
-                                {{{modtitle}}}
+                                {{modtitle}}
                             {{/modtitle_inplaceeditable}}
                         </div>
                     {{/isediting}}
@@ -182,18 +182,18 @@
                         {{#clickable}}
                             <a href="{{url}}"{{#clickable}} {{#clickable}}{{#isEmbeddedResource}} data-action="launch-tiles-resource-modal"{{/isEmbeddedResource}}{{#isEmbeddedModule}}
                                data-action="launch-tiles-module-modal"{{/isEmbeddedModule}}{{/clickable}}{{#onclick}} onclick="{{onclick}}"{{/onclick}}{{/clickable}}
-                               data-title="{{{modtitle}}}" class="instancename {{{extraclasses}}}"  data-action="launch-tiles-{{launchtype}}">
-                                <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
+                               data-title="{{modtitle}}" class="instancename {{{extraclasses}}}"  data-action="launch-tiles-{{launchtype}}">
+                                <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{modtitle}}"
                                      role="presentation">
-                                <span class="activitytitle">{{{modtitle}}}</span>
+                                <span class="activitytitle">{{modtitle}}</span>
                             </a>
                         {{/clickable}}
 
                         {{^clickable}}
                             <span class="instancename">
-                                <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{{modtitle}}}"
+                                <img src="{{iconurl}}" class="iconlarge activityicon" alt="{{modtitle}}"
                                      role="presentation">
-                                <span class="activitytitle">{{{modtitle}}}</span>
+                                <span class="activitytitle">{{modtitle}}</span>
                             </span>
                         {{/clickable}}
 
