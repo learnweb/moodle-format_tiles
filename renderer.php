@@ -472,18 +472,27 @@ class format_tiles_renderer extends format_section_renderer_base
      * @return string HTML to output.
      */
     public function format_cm_content_text($mod, $record, $context) {
+        $text = '';
         if (isset($record->intro)) {
-            $content = $record->intro . $record->content;
-        } else {
-            $content = $record->content;
+            $text .= file_rewrite_pluginfile_urls(
+                $record->intro,
+                'pluginfile.php',
+                $context->id,
+                'mod_' . $mod->modname,
+                'intro',
+            null
+            );
         }
-        $text = file_rewrite_pluginfile_urls(
-            $content,
-            'pluginfile.php',
-            $context->id,
-            'mod_' . $mod->modname,
-            'content', $record->revision
-        );
+        if (isset($record->content)) {
+            $text .= file_rewrite_pluginfile_urls(
+                $record->content,
+                'pluginfile.php',
+                $context->id,
+                'mod_' . $mod->modname,
+                'content',
+                $record->revision
+            );
+        }
         $formatoptions = new stdClass();
         $formatoptions->noclean = true;
         $formatoptions->overflowdiv = true;
