@@ -44,7 +44,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
         var courseId;
 
         var Selector = {
-            toggleCompletion: ".togglecompletion",
+            completioncheckbox: ".completioncheckbox",
             completionAuto: ".completion-auto",
             modal: ".modal",
             modalDialog: ".modal-dialog",
@@ -63,6 +63,10 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             newWindowButton: ".button_expand",
             modalHeader: ".modal-header",
             embedModuleButtons: ".embed-module-buttons"
+        };
+
+        const CLASS = {
+            COMPLETION_MANUAL: "completeonmanual"
         };
 
         var LaunchModalDataActions = {
@@ -177,19 +181,17 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
 
                 }).fail(Notification.exception);
                 // Render the modal header / title and set it to the page.
-                if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
-                    var inverseCompletionState = parseInt(
-                        $(Selector.completionState + cmid).attr("value")
-                    );
+                const checkBox = clickedCmObject.find(Selector.completioncheckbox);
+                if (checkBox.length !== 0) {
+                    templateData.completionstate = parseInt(checkBox.attr('data-state'));
+                    const inverseCompletionState = 1 - templateData.completionstate;
                     templateData.completionInUseForCm = 1;
-                    templateData.completionstate = 1 - inverseCompletionState;
                     templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
                     templateData.completionstateInverse = inverseCompletionState;
-                    templateData.completionIsManual = clickedCmObject
-                        .find(Selector.toggleCompletion).attr("data-ismanual");
+                    templateData.completionIsManual = clickedCmObject.hasClass(CLASS.COMPLETION_MANUAL);
                     // Trigger event to check if other items in course have updated availability.
                     require(["format_tiles/completion"], function (completion) {
-                        completion.triggerSectionContentCheckEvent(sectionNum);
+                        completion.triggerCompletionChangedEvent(sectionNum);
                     });
                 }
                 Templates.render("format_tiles/embed_module_modal_header_btns", templateData).done(function (html) {
@@ -258,7 +260,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     modalRoot.find(Selector.modalBody).addClass("text-center");
                 }).fail(Notification.exception);
                 // Render the modal header / title and set it to the page.
-                if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
+                if (clickedCmObject.find(Selector.completioncheckbox).length !== 0) {
                     var inverseCompletionState = parseInt(
                         $(Selector.completionState + cmid).attr("value")
                     );
@@ -266,11 +268,10 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     templateData.completionstate = 1 - inverseCompletionState;
                     templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
                     templateData.completionstateInverse = inverseCompletionState;
-                    templateData.completionIsManual = clickedCmObject
-                        .find(Selector.toggleCompletion).attr("data-ismanual");
+                    templateData.completionIsManual = clickedCmObject.hasClass(CLASS.COMPLETION_MANUAL);
                     // Trigger event to check if other items in course have updated availability.
                     require(["format_tiles/completion"], function (completion) {
-                        completion.triggerSectionContentCheckEvent(sectionNum);
+                        completion.triggerCompletionChangedEvent(sectionNum);
                     });
                 }
                 Templates.render("format_tiles/embed_module_modal_header_btns", templateData).done(function (html) {
@@ -384,19 +385,17 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         tileid: sectionNum,
                         content: response.html
                     };
-                    if (clickedCmObject.find(Selector.toggleCompletion).length !== 0) {
+                    if (clickedCmObject.find(Selector.completioncheckbox).length !== 0) {
                         var inverseCompletionState = parseInt(
                             $(Selector.completionState + cmid).attr("value")
                         );
                         templateData.completionInUseForCm = 1;
                         templateData.completionstate = 1 - inverseCompletionState;
                         templateData.completionstateInverse = inverseCompletionState;
-                        templateData.completionIsManual = clickedCmObject
-                            .find(Selector.toggleCompletion).attr("data-ismanual");
-                        templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
+                        templateData.completionIsManual = clickedCmObject.hasClass(CLASS.COMPLETION_MANUAL);
                         // Trigger event to check if other items in course have updated availability.
                         require(["format_tiles/completion"], function (completion) {
-                            completion.triggerSectionContentCheckEvent(sectionNum);
+                            completion.triggerCompletionChangedEvent(sectionNum);
                         });
                     } else {
                         templateData.completionInUseForCm = 0;
@@ -519,7 +518,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         // If we have an auto completion toggle on this item, trigger event.
                         if (clickedCmObject.find(Selector.completionAuto).length !== 0) {
                             require(["format_tiles/completion"], function (completion) {
-                                completion.triggerSectionContentCheckEvent(
+                                completion.triggerCompletionChangedEvent(
                                     clickedCmObject.closest(Selector.sectionMain).attr('data-section')
                                 );
                             });

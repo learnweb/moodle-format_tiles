@@ -179,8 +179,6 @@ if ($course->enablecompletion) {
         array(
             $course->id,
             get_string('complete-y-auto', 'format_tiles'),
-            json_encode($courseformat->labellikecoursemods),
-            get_config('format_tiles', 'usetooltips')
         )
     );
 }

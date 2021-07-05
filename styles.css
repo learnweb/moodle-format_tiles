@@ -338,6 +338,7 @@
     margin-top: 0;
     margin-bottom: 0;
     padding: 0;
+    max-height: 0;
 }
 .format-tiles.jsenabled .course-content ul.tiles .tile.tile-collapsed {
     display: none;
@@ -507,7 +508,7 @@
     /*z-index needs to be behind navigation-arrows as they may overlap*/
 }
 
-.format-tiles #sectionbuttons {
+.format-tiles .sectionbuttons {
     position: relative;
     right: 30px;
     top: 0;
@@ -923,9 +924,6 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
     /* stylelint-disable-next-line declaration-no-important */
     opacity: 1 !important;
 }
-.format-tiles li.section .availabilityinfo {
-    margin-left: 3em;
-}
 .format-tiles .availabilityinfo.isstealth .badge {
     font-size: 0.6em;
 }
@@ -1001,6 +999,7 @@ body.format-tiles.jsenabled .course-content .headerabovetiles {
         flex-basis: 160px !important;
         /* stylelint-disable-next-line declaration-no-important */
         min-width: 160px !important;
+        display: none;
     }
     .format-tiles .section .activity.subtile .activityinstance {
         display: block;
@@ -1080,12 +1079,12 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
         position: relative;
         /* stylelint-disable-next-line declaration-no-important */
         max-width: 45% !important;
-        /* stylelint-disable-next-line declaration-no-important */
-        padding: 7px 2px 5px 7px !important;
         margin: 5px;
     }
     .format-tiles .course-content ul.tiles .tile:not(.spacer) {
         min-height: 210px;
+        /* stylelint-disable-next-line declaration-no-important */
+        padding: 7px 2px 5px 7px !important;
     }
     .format-tiles .clickable-region {
         /* stylelint-disable-next-line declaration-no-important */
@@ -1483,11 +1482,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     right: 1px;
     top: 8px;
 }
-.format-tiles .nosubtiles .completioncheckbox {
-    width: 30px;
-    height: 30px;
-    padding-top: 3px;
-}
 .format-tiles .nosubtiles .completioncheckbox .btn:hover,
 .format-tiles .nosubtiles .completioncheckbox .btn:active {
     /* Adaptable */
@@ -1497,12 +1491,29 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .subtiles .completioncheckbox.completion-auto .completion-icon {
     margin-top: 2px;
 }
-.format-tiles .togglecompletion button.btn {
-    border: 0;
-    background: none;
+.format-tiles button[data-action="change-completion-status"]:hover {
+    border: 3px solid orange;
+    border-radius: 50%;
+    transition: border 300ms ease-in-out;
+}
+.format-tiles button.completioncheckbox,
+.format-tiles .completioncheckbox {
+    border: 3px solid transparent;
+    border-radius: 50%;
+    transition: border 300ms ease-in-out;
+    background-color: transparent;
+    height: 41px;
+    width: 41px;
+    padding-left: 4px;
+}
+.format-tiles .embed-module-buttons button.completioncheckbox,
+.format-tiles .embed-module-buttons .completioncheckbox {
     height: 30px;
     width: 30px;
-    padding: 0;
+    padding-left: 0;
+}
+.format-tiles .completioncheckbox.completion-auto {
+    opacity: 0.6;
 }
 .format-tiles .embed_cm_modal .embed_file_button,
 .format-tiles .modal-container .modal .modal-header button.close {
@@ -1541,7 +1552,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .embed-module-buttons button.close {
     width: 28px;
     height: 28px;
-    padding-top: 3px;
     float: none;
 }
 .format-tiles .embed-module-buttons .completion-icon {

@@ -45,7 +45,6 @@ class format_tiles extends format_base {
     /**
      *  We want to treat label and plugins that behave like labels as labels.
      * E.g. we don't render them as subtiles but show their content directly on page.
-     * And we don't count them for completiontracking.
      * This includes plugins like mod_customlabel and mod_unilabel, as defined here.
      * @var []
      */

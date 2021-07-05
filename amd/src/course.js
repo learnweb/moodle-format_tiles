@@ -69,7 +69,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             SECTION_ID: "#section-",
             SECTION_TITLE: ".sectiontitle",
             SECTION_MAIN: ".section.main",
-            SECTION_BUTTONS: "#sectionbuttons",
+            SECTION_BUTTONS: ".sectionbuttons",
             CLOSE_SEC_BTN: ".closesectionbtn",
             HIDE_SEC0_BTN: "#buttonhidesec0",
             SECTION_ZERO: "#section-0",
@@ -227,7 +227,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                     // Allow very short delay so we dont skip forward on the basis of our last key press.
                                     contentArea.find(Selector.SECTION_TITLE).focus();
                                     bodyHtml.animate({scrollTop: contentArea.offset().top - HEADER_BAR_HEIGHT}, "slow");
-                                    contentArea.find('#sectionbuttons').css("top", "");
+                                    contentArea.find(Selector.SECTION_BUTTONS).css("top", "");
                                 }, 200);
                             }
                         });
@@ -250,8 +250,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     setTimeout(function () {
                         // Manual forms, auto icons and "Restricted until ..." etc.
                         try {
-                            const tooltipItems = contentArea.find(".togglecompletion, .completioncheckbox, .badge-info");
-                            if (tooltipItems.length > 0) {
+                            const tooltipItems = contentArea.find(".badge-info");
+                            if (tooltipItems.length > 0 && typeof tooltipItems.tooltip == 'function') {
                                 tooltipItems.tooltip();
                             }
                         } catch (err) {
@@ -906,10 +906,12 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
 
                     // If this event is triggered, user has updated a completion check box.
                     // We need to retrieve section content from server in case availability of items has changed.
-                    $(document).on('format-tiles-completion-check-section', function(e, data) {
+                    $(document).on('format-tiles-completion-changed', function(e, data) {
                         const allSectionNums = $(Selector.TILE).not(Selector.SPACER).map((i, t) => {
                             return parseInt($(t).attr('data-section'));
                         }).toArray();
+                        // Need to include sec zero as may have completion tracked items.
+                        allSectionNums.push(0);
                         const requests = ajax.call([
                             {
                                 methodname: "format_tiles_get_single_section_page_html",
@@ -939,7 +941,9 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                         requests[1]
                             .done((response) => {
                                 require(["format_tiles/completion"], function (completion) {
-                                    completion.updateSectionInfo(response.sections);
+                                    completion.updateSectionsInfo(
+                                        response.sections, response.overall.complete, response.overall.outof
+                                    );
                                 });
 
                             })

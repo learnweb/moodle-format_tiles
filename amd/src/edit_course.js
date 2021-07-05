@@ -159,7 +159,7 @@ define(
                         // Initialise tooltips shown for example when hover over tile icon "Click to change icon".
                         // But not on mobile as they make clicks harder.
                         var toolTips = $("[data-toggle=tooltip]");
-                        if (toolTips.length !== 0) {
+                        if (toolTips.length !== 0 && typeof toolTips.tooltip == 'function') {
                             try {
                                 toolTips.tooltip();
                             } catch (err) {

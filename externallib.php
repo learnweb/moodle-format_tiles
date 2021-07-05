@@ -806,6 +806,7 @@ class format_tiles_external extends external_api
         $renderer = $PAGE->get_renderer('format_tiles');
         $templateable = new \format_tiles\output\course_output($course, true);
         $showprogressaspercent = $templateable->courseformatoptions['courseshowtileprogress'] == 2;
+        $overall = ['complete' => 0, 'outof' => 0];
         // First add the info about the section and its availability.
         foreach ($sectionnums as $sectionnum) {
             if (isset($sectioninfo[$sectionnum]) && ($sectioninfo[$sectionnum]->visible || $canviewhidden)) {
@@ -850,10 +851,13 @@ class format_tiles_external extends external_api
                     // Add percent, percentcircumf, percentoffset, issingledigit.
                     $sections[$section['sectionnum']][strtolower($k)] = $v;
                 }
+                $overall['complete'] += $completionthistile['completed'];
+                $overall['outof'] += $completionthistile['outof'];
             }
         }
         return array(
             'sections' => array_values($sections),
+            'overall' => $overall,
             'status' => true,
             'warnings' => $warnings
         );
@@ -914,6 +918,12 @@ class format_tiles_external extends external_api
                             'isclickable' => new external_value(PARAM_BOOL, 'Is the section clickable / expandable'),
                             'availabilitymessage' => new external_value(PARAM_RAW, 'If the section is restricted, explains why')
                         )
+                    )
+                ),
+                'overall' => new external_single_structure(
+                    array(
+                        'complete' => new external_value(PARAM_INT, 'How many activities complete overall'),
+                        'outof' => new external_value(PARAM_INT, 'How many activities out of overall'),
                     )
                 ),
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),

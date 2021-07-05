@@ -125,6 +125,12 @@ class course_output implements \renderable, \templatable
     private $usingjsnav;
 
     /**
+     * Are we showing activity completion conditions (Moodle 3.11+).
+     * @var bool
+     */
+    private $showcompletionconditions;
+
+    /**
      * course_output constructor.
      * @param \stdClass $course the course object.
      * @param bool $fromajax Whether we are rendering for AJAX request.
@@ -155,6 +161,7 @@ class course_output implements \renderable, \templatable
         $this->courseformatoptions = $this->get_course_format_options($this->fromajax);
         $this->usingjsnav = get_config('format_tiles', 'usejavascriptnav')
             && !get_user_preferences('format_tiles_stopjsnav');
+        $this->showcompletionconditions = isset($course->showcompletionconditions) && $course->showcompletionconditions;
     }
 
     /**
@@ -300,7 +307,7 @@ class course_output implements \renderable, \templatable
         // If we have nothing to output, don't.
         if (!($thissection = $this->modinfo->get_section_info($this->sectionnum))) {
             // This section doesn't exist.
-            print_error('unknowncoursesection', 'error', null, $this->course->fullname);
+            debugging('Unknown course section ' . $this->sectionnum, DEBUG_DEVELOPER);
             return $data;
         }
         if (!$thissection->uservisible) {
@@ -413,7 +420,7 @@ class course_output implements \renderable, \templatable
             // OR it is hidden but the course has a setting to display hidden sections as unavilable.
 
             // If we have sections with numbers greater than the max allowed, do not show them unless teacher.
-            // (Showing more to editors allows editor to fix them.)
+            // (Showing more to editors allows editor to fix them).
             if ($countincludedsections > $maxallowedsections) {
                 if (!$data['canedit']) {
                     // Do not show them to students at all.
@@ -637,7 +644,7 @@ class course_output implements \renderable, \templatable
         $outof = 0;
         foreach ($sectioncmids as $cmid) {
             $thismod = $coursecms[$cmid];
-            if ($thismod->uservisible && !$this->treat_as_label($thismod)) {
+            if ($thismod->uservisible && !$thismod->deletioninprogress) {
                 if ($this->completioninfo->is_enabled($thismod) != COMPLETION_TRACKING_NONE) {
                     $outof++;
                     $completiondata = $this->completioninfo->get_data($thismod, true);
@@ -802,6 +809,7 @@ class course_output implements \renderable, \templatable
      * @throws \moodle_exception
      */
     private function section_course_mods($section, $output) {
+        global $USER;
         if (!isset($section->section)) {
             debugging("section->section is not set");
         }
@@ -817,6 +825,9 @@ class course_output implements \renderable, \templatable
         $sectioncontent = [];
         foreach ($cmids as $index => $cmid) {
             $mod = $this->modinfo->get_cm($cmid);
+            if ($mod->deletioninprogress) {
+                continue;
+            }
             $treataslabel = $this->treat_as_label($mod);
             $moduledata = $this->course_module_data(
                 $mod,
@@ -826,6 +837,20 @@ class course_output implements \renderable, \templatable
                 $index == 0,
                 $output
             );
+
+            // From Moodle 3.11 onwards, we may have extra completion conditions info to display under activities.
+            if (class_exists('\core\activity_dates') && isset($this->showcompletionconditions)
+                && $this->showcompletionconditions) {
+                    $activitydates = \core\activity_dates::get_dates_for_module($mod, $USER->id);
+                    $completiondetails = \core_completion\cm_completion_details::get_instance(
+                        $mod, $USER->id, $this->showcompletionconditions
+                    );
+                if ($completiondetails->has_completion() || !empty($activitydates)) {
+                    // No need to render the activity information when there's no completion info and activity dates to show.
+                    $activityinfo = new \core_course\output\activity_information($mod, $completiondetails, $activitydates);
+                    $moduledata['activityinformation'] = $activityinfo->export_for_template($output);
+                }
+            }
             $previouswaslabel = $treataslabel;
             if (!empty($moduledata)) {
                 $sectioncontent[] = $moduledata;
@@ -948,14 +973,14 @@ class course_output implements \renderable, \templatable
         ) {
             $moduleobject['extraclasses'] .= ' dimmed';
         }
-        if ($mod->completionview == COMPLETION_VIEW_REQUIRED) {
+        if ($mod->completion == COMPLETION_TRACKING_MANUAL) {
+            $moduleobject['extraclasses'] .= " completeonmanual";
+        } else if ($mod->completionview == COMPLETION_VIEW_REQUIRED) {
             // Auto completion with a view required.
             $moduleobject['extraclasses'] .= " completeonview";
         } else if ($mod->completion == COMPLETION_TRACKING_AUTOMATIC) {
             // Auto completion with no view required (e.g. grade required).
             $moduleobject['extraclasses'] .= " completeonevent";
-        } else if ($mod->completion == COMPLETION_TRACKING_MANUAL) {
-            $moduleobject['extraclasses'] .= " completeonmanual";
         }
         if ($this->isediting) {
             $moduleobject['cmmove'] = course_get_cm_move($mod, $section->section);
