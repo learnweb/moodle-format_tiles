@@ -778,6 +778,11 @@ body.jsenabled.format-tiles #collapsiblesec0 {
 .format-tiles .completion-icon.completion-icon-y {
     background-image: url([[pix:format_tiles|completion-y]]);
 }
+.format-tiles li.activity .completion-icon {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+}
 .format-tiles .completion-icon.completion-icon-fail {
     background-image: url([[pix:format_tiles|completion-fail]]);
 }
@@ -1491,7 +1496,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 .format-tiles .subtiles .completioncheckbox.completion-auto .completion-icon {
     margin-top: 2px;
 }
-.format-tiles button[data-action="change-completion-status"]:hover {
+.format-tiles li.activity button[data-action="change-completion-status"]:hover {
     border: 3px solid orange;
     border-radius: 50%;
     transition: border 300ms ease-in-out;
@@ -1502,9 +1507,12 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     border-radius: 50%;
     transition: border 300ms ease-in-out;
     background-color: transparent;
-    height: 41px;
-    width: 41px;
+    height: 30px;
+    width: 30px;
     padding-left: 4px;
+}
+.format-tiles .completioncheckbox:focus {
+    outline: none;
 }
 .format-tiles .embed-module-buttons button.completioncheckbox,
 .format-tiles .embed-module-buttons .completioncheckbox {

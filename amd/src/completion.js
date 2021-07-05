@@ -143,7 +143,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
          */
         var setCompletionState = function (cmid, completed) {
             ajax.call([{
-                methodname: "core_completion_update_activity_completion_status_manually",
+                methodname: "format_tiles_update_activity_completion_status_manually",
                 args: {
                     cmid: cmid,
                     completed: completed

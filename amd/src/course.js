@@ -39,7 +39,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
         var loadingIconHtml;
         var stringStore = [];
         var windowOverlay;
-        var headerOverlay;
         var scrollFuncLock = false;
         var sectionIsOpen = false;
         var HEADER_BAR_HEIGHT = 60; // This varies by theme and version so will be reset once pages loads below.
@@ -77,13 +76,12 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             LAUNCH_STANDARD: '[data-action="launch-tiles-standard"]',
             TOOLTIP: "[data-toggle=tooltip]",
             HEADER_BAR: ["header.navbar", "nav.fixed-top.navbar", "#essentialnavbar.moodle-has-zindex", "#navwrap",
-                "nav.navbar-fixed-top", "#main-navbar"]
+                "nav.navbar-fixed-top", "#adaptable-page-header-wrapper"]
             // We try several different selectors for header bar as it varies between theme.
             // (Boost based, clean based, essential etc).
         };
         var ClassNames = {
             SELECTED: "selected",
-            HEADER_OVERLAY: "header-overlay",
             OPEN: "open",
             CLOSED: "closed",
             LAUNCH_CM_MODAL: "launch-tiles-cm-modal",
@@ -106,24 +104,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             ESCAPE: 27,
             TAB: 9,
             RETURN: 13
-        };
-
-        /**
-         * Because headeroverlay may not exist, we want to avoid trying to fade if not there.
-         * @param {boolean} fadeIn whether to fade in (fade out otherwise).
-         * @returns {boolean}
-         */
-        var headerOverlayFadeInOut = function(fadeIn) {
-            if (headerOverlay === undefined) {
-                return false;
-            } else {
-                if (fadeIn === true) {
-                    headerOverlay.fadeIn(300);
-                } else {
-                    headerOverlay.fadeOut(300);
-                }
-                return true;
-            }
         };
 
         /**
@@ -167,7 +147,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             $(Selector.TILE).removeClass(ClassNames.SELECTED).css(CSS.Z_INDEX, "").css(CSS.BG_COLOUR, "");
             $(".section " + ClassNames.SELECTED).removeClass(ClassNames.SELECTED).css(CSS.Z_INDEX, "");
             windowOverlay.fadeOut(300);
-            headerOverlayFadeInOut(false);
+
             if (sectionToFocus !== undefined && sectionToFocus !== 0) {
                 $(Selector.TILEID + sectionToFocus).focus();
             }
@@ -357,14 +337,12 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 // We have scrolled down and content bottom has gone out of the top of window.
                                 if (windowOverlay.css(CSS.DISPLAY) === "block") {
                                     windowOverlay.fadeOut(300);
-                                    headerOverlayFadeInOut(false);
                                 }
                                 buttons.css("top", 0);
                             } else if (contentArea.offset().top > windowTop + $(window).outerHeight()) {
                                 // We have scrolled up and  content bottom has gone out of the bottom of window.
                                 if (windowOverlay.css(CSS.DISPLAY) === "block") {
                                     windowOverlay.fadeOut(300);
-                                    headerOverlayFadeInOut(false);
                                 }
                                 buttons.css("top", 0);
                             } else if (windowOverlay.css(CSS.DISPLAY) === "none") {
@@ -510,7 +488,6 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             backDropZIndex = parseInt(windowOverlay.css(CSS.Z_INDEX));
             var tile = $(Selector.TILEID + secNumOnTop);
             tile.css(CSS.Z_INDEX, (backDropZIndex + 1));
-            headerOverlayFadeInOut(true);
             $(Selector.SECTION_ID + secNumOnTop).css(CSS.Z_INDEX, (backDropZIndex + 1));
             if (tile.css(CSS.BG_COLOUR) && tile.css(CSS.BG_COLOUR).substr(0, 4) === "rgba") {
                 // Tile may have transparent background from theme - needs to be solid otherwise modal shows through.
@@ -532,7 +509,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
          */
         var clickItemBehind = function (e) {
             var clickedItem = $(e.currentTarget);
-            if (clickedItem.attr("id") === "window-overlay" || clickedItem.attr("id") === ClassNames.HEADER_OVERLAY) {
+            if (clickedItem.attr("id") === "window-overlay") {
                 // We need to know what is behind the modal, so hide it for an instant to find out.
                 clickedItem.hide();
                 var BottomElement = $(document.elementFromPoint(e.clientX, e.clientY));
@@ -857,31 +834,7 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                             return $(selector).length > 0;
                         }));
                         if (headerBar !== undefined && headerBar.length !== 0) {
-                            headerBar.css(CSS.Z_INDEX, overlayZindex + 2);
-                            if (headerBar.attr("id") !== "navwrap") {
-                                // ID navwrap suggests theme is Adaptable based. We don't bother with header overlay if so.
-                                // Otherise the header bar has a separate mini overlay of its own - find and hide this.
-                                // If it is clicked, cancel tile selections and click the item behind where clicked.
-                                // Do not include for Moodle 3.5 or higher as not needed.
-                                if (headerBar.outerHeight() !== undefined) {
-                                    HEADER_BAR_HEIGHT = headerBar.outerHeight();
-                                    headerOverlay = $("<div></div>")
-                                        .addClass(ClassNames.HEADER_OVERLAY).attr("id", ClassNames.HEADER_OVERLAY)
-                                        .css(CSS.DISPLAY, "none");
-                                    headerOverlay.insertAfter(Selector.PAGE)
-                                        .css(CSS.Z_INDEX, (overlayZindex) + 3).css(CSS.HEIGHT, HEADER_BAR_HEIGHT)
-                                        .click(function (e) {
-                                            cancelTileSelections(0);
-                                            clickItemBehind(e);
-                                        });
-                                } else {
-                                    require(["core/log"], function(log) {
-                                        log.debug(
-                                            "Failed to get navbar.  Ensure theme's navbar selector is included in global HEADER_BAR"
-                                        );
-                                    });
-                                }
-                            }
+                            headerBar.css(CSS.Z_INDEX, overlayZindex + 3);
                         }
 
                         // When user clicks to close a section using cross at top right in section.
