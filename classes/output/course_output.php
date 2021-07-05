@@ -941,6 +941,12 @@ class course_output implements \renderable, \templatable
                 }
             }
         }
+
+        // Issue 67 handling for LTI set to open in new window.
+        if ($mod->modname == 'lti' && $mod->onclick) {
+            $moduleobject['onclick'] = str_replace('&amp;', '&', $mod->onclick);
+        }
+
         // Specific handling for embedded course module items (e.g. page) as allowed by site admin.
         if (array_search($mod->modname, $this->usemodalsforcoursemodules['modules']) !== false) {
             $moduleobject['isEmbeddedModule'] = 1;
