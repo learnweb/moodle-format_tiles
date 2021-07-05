@@ -152,7 +152,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     config: {wwwroot: config.wwwroot},
                     showDownload: 0,
                     showNewWindow: 0,
-                    completionInUseForCm: 0
+                    completionInUseForCm: 0,
+                    completionstring: ''
                 };
 
                 // If it's a PDF in this modal, change from the defaults assigned above.
@@ -189,6 +190,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
                     templateData.completionstateInverse = inverseCompletionState;
                     templateData.completionIsManual = clickedCmObject.hasClass(CLASS.COMPLETION_MANUAL);
+                    templateData.completionstring = checkBox.attr('title');
                     // Trigger event to check if other items in course have updated availability.
                     require(["format_tiles/completion"], function (completion) {
                         completion.triggerCompletionChangedEvent(sectionNum);

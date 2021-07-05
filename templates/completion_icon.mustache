@@ -66,7 +66,7 @@
 
     {{/completionIsManual}}
     {{^completionIsManual}}
-        <span class="completioncheckbox completion-auto" id="completion-check-{{cmid}}"
+        <span class="completioncheckbox completion-auto completion-check-{{cmid}}"
               title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}"
               data-ismanual="0" data-completionstate="{{completionstate}}">
             <span class="completion-icon completion_img_{{cmid}} completion-icon-{{completionicon}}"></span>
@@ -75,7 +75,7 @@
 {{/isediting}}
 
 {{#isediting}}
-    <div class="completioncheckbox" id="completion-check-{{cmid}}" data-action="change-completion-status" data-cmid="{{cmid}}" data-state="{{completionstate}}"
+    <div class="completioncheckbox completion-check-{{cmid}}" data-action="change-completion-status" data-cmid="{{cmid}}" data-state="{{completionstate}}"
     title="{{#completionstring}}{{completionstring}}{{/completionstring}}{{^completionstring}}{{#str}}togglecompletion, format_tiles{{/str}}{{/completionstring}}" data-ismanual="0">
         <span class="completion-icon completion_img_{{cmid}} completion-icon-{{completionicon}}"></span>
     </div>
