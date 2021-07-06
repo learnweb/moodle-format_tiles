@@ -240,8 +240,8 @@ Other
 - Fix URL on out of sequence warning.
 
 3.9.0.15 (2020080615) (RELEASE CANDIDATE)
-=====================
-- Comaptibility for Moodle 3.11 incl new completion tracking activity info.
+=========================================
+- Compatibility for Moodle 3.11 incl new completion tracking activity info.
 - Fix issue #61, issue #75, issue #78 (completion no updating or not updating restrictions).
 - Fix issue #70 escape chars in mod title.
 - Fix issue 74 typo in image upload guidance.
@@ -250,3 +250,8 @@ Other
 - Fix incorrect lang string.
 - Fix issue #77 page description image not displaying.
 - Fix issue #73 (allow completion for labels).
+
+3.9.0.16 (2020080616) (RELEASE CANDIDATE)
+=========================================
+- Improve wrapping of tile and sub-tile titles where long (incl new line break feature).
+- Improve section completion checks on completion change.
