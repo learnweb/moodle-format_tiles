@@ -366,6 +366,12 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configtextarea($name, $title, $description, $default);
     $page->add($setting);
 
+    $name = 'format_tiles/enablelinebreakfilter';
+    $title = get_string('enablelinebreakfilter', 'format_tiles');
+    $description = get_string('enablelinebreakfilter_desc', 'format_tiles');
+    $default = 0;
+    $page->add(new admin_setting_configcheckbox($name, $title, $description, $default));
+
     $settingscategory->add($page);
 
     $ADMIN->add('formatsettings', $settingscategory);

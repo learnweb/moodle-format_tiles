@@ -553,6 +553,8 @@
     top: 45%;
     transform: translate(0, -40%);
     position: absolute;
+    word-wrap: break-word;
+    max-width: 220px;
 }
 
 .format-tiles ul.tiles .tile .tile-textinner.longtitle h3 {
@@ -1117,7 +1119,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     }
     .format-tiles li.activity.subtile .activitytitle {
         font-size: 1em;
-        word-break: break-word;
         margin-top: 0;
     }
     .format-tiles .progress-indic {
@@ -1434,6 +1435,8 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     max-height: 160px;
     overflow: hidden;
     margin: 0;
+    word-break: break-word;
+    max-width: 226px;
 }
 .format-tiles li.activity.subtile .activitytitle a {
     display: block;

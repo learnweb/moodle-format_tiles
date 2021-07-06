@@ -317,7 +317,11 @@ class course_output implements \renderable, \templatable
         }
 
         // Data for the requested section page.
-        $data['title'] = $this->apply_linebreak_filter(get_section_name($this->course, $thissection->section), true);
+        $data['title'] = format_string(get_section_name($this->course, $thissection->section));
+        if (get_config('format_tiles', 'enablelinebreakfilter')) {
+            // No need to line break here as we have plenty of room, so remove the char by passing true.
+            $data['title'] = $this->apply_linebreak_filter($data['title'], true);
+        }
         $data['summary'] = $output->format_summary_text($thissection);
         $data['tileid'] = $thissection->section;
         $data['secid'] = $thissection->id;
@@ -414,6 +418,7 @@ class course_output implements \renderable, \templatable
         $previoussectionnumber = 0;
         $previoustiletitle = '';
         $countincludedsections = 0;
+        $uselinebreakfilter = get_config('format_tiles', 'enablelinebreakfilter');
         foreach ($this->modinfo->get_section_info_all() as $sectionnum => $section) {
             // Show the section if the user is permitted to access it, OR if it's not available
             // but there is some available info text which explains the reason & should display,
@@ -446,9 +451,11 @@ class course_output implements \renderable, \templatable
             $showsection = $section->uservisible ||
                 ($section->visible && !$section->available && !empty($section->availableinfo));
             if ($sectionnum != 0 && $showsection) {
-                $title = format_string(
-                    $this->truncate_title($this->apply_linebreak_filter(get_section_name($this->course, $sectionnum)))
-                );
+                if ($uselinebreakfilter) {
+                    $title = $this->apply_linebreak_filter($this->truncate_title(get_section_name($this->course, $sectionnum)));
+                } else {
+                    $title = format_string($this->truncate_title(get_section_name($this->course, $sectionnum)));
+                }
                 if ($allowedphototiles && $usingphotoaltstyle && $isphototile) {
                     // Replace the last space with &nbsp; to avoid having one word on the last line of the tile title.
                     $title = preg_replace('/\s(\S*)$/', '&nbsp;$1', $title);
@@ -798,27 +805,22 @@ class course_output implements \renderable, \templatable
     }
 
     /**
-     * Allow user to insert a line break flag into very long tile titles i.e. '{{#linebreak}}'
-     * When encountered on a tile this is changed to - to allow the text to wrap.
+     * Allow user to insert a line break flag as '&#8203;' into very long tile titles.
+     * When encountered on a tile title, this char is changed to '- ' to allow the text to wrap.
      * This is useful on tiles with long words in the title (e.g. German language).
-     * @param $text
-     * @param false $remove
-     * @return array|string|string[]
+     * @param string $text
+     * @param bool $remove if we want just to remove the flag (no need to line break), pass true.
+     * @return string
      */
-    private function apply_linebreak_filter($text, $remove = false) {
-        $flag = '{{#linebreak}}';
-        if ($remove) {
-            // We don't want the flag or a line break (e.g. we are "in" a tile so have lots of space),
-            return str_replace($flag, '', $text);
-        }
-
-        $maxwidthfortilechars = 20;
-        if (strlen($text) > $maxwidthfortilechars) {
-            // If the title is long, we need to line break so replace flag with hyphen space.
-            return str_replace($flag, '- ', $text);
+    private function apply_linebreak_filter(string $text, $remove = false) {
+        $zerowidthspace = '&#8203;';
+        $maxwidthfortilechars = 15;
+        if (!$remove && strlen($text) > $maxwidthfortilechars) {
+            // If the title is long, we want to line break with a -, so replace the zero width space with hyphen space.
+            return format_string(str_replace($zerowidthspace, '- ', $text));
         } else {
             // If the title is short, we don't need to line break so delete the flag.
-            return str_replace($flag, '', $text);
+            return format_string(str_replace($zerowidthspace, '', $text));
         }
     }
 
