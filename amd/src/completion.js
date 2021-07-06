@@ -76,9 +76,9 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                 numComplete: numComplete,
                 numOutOf: outOf,
                 showAsPercent: asPercent,
-                percent: Math.round(numComplete / outOf * 100),
+                percent: outOf > 0 ? Math.round(numComplete / outOf * 100) : 0,
                 percentCircumf: 106.8,
-                percentOffset: Math.round(((outOf - numComplete) / outOf) * 106.8),
+                percentOffset: outOf > 0 ? Math.round(((outOf - numComplete) / outOf) * 106.8) : 0,
                 isComplete: false,
                 isSingleDigit: false,
                 hastilephoto: $(Selector.tileId + tileId).hasClass("phototile"),
@@ -88,7 +88,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
             } else {
                 data.isOverall = 0;
             }
-            if (numComplete >= outOf) {
+            if (outOf > 0 && numComplete >= outOf) {
                 data.isComplete = true;
             }
             if (data.percent < 10) {
@@ -116,7 +116,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
             Templates.render("format_tiles/progress", progressTemplateData(
                 sectionNum,
                 newTileProgressValue,
-                tileProgressIndicator.attr(dataKeys.numberOutOf),
+                parseInt(tileProgressIndicator.attr(dataKeys.numberOutOf)),
                 tileProgressIndicator.hasClass("percent")
             )).done(function (html) {
                 // Need to repeat jquery selector as it is being replaced (replacwith).
@@ -210,7 +210,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                         parseInt(overallProgressIndicator.attr(dataKeys.numberComplete)) + 1,
                         overallProgressIndicator.attr(dataKeys.numberOutOf)
                     );
-                    setOverallProgressIndicator(newOverallProgressValue, overallProgressIndicator.attr(dataKeys.numberOutOf));
+                    setOverallProgressIndicator(newOverallProgressValue, parseInt(overallProgressIndicator.attr(dataKeys.numberOutOf)));
                 }
             }
             // Even if it is not a "complete on view" activity, clear UI storage so that when user returns it is correct.
