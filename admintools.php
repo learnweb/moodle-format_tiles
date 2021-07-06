@@ -97,8 +97,8 @@ function permitted_colours() {
 
 /**
  * Function to allow site admin to reset course colours to allowed settings from Site Admin > Plugins page.
- * @param $settingsurl
- * @param $pageurl
+ * @param moodle_url $settingsurl
+ * @param moodle_url $pageurl
  * @return string
  * @throws coding_exception
  * @throws dml_exception

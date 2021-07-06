@@ -128,7 +128,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
         const setOverallProgressIndicator = function(newValue, outOf) {
             // Render and replace the *overall* progress indicator for the *whole course*.
             Templates.render("format_tiles/progress", progressTemplateData(
-                0, newValue, outOf,true
+                0, newValue, outOf, true
             )).done(function (html) {
                 $("#tileprogress-0").replaceWith(html).fadeOut(0).animate({opacity: 1}, 500);
             });
@@ -137,7 +137,6 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
          * When a user clicks a completion tracking checkbox in this format, pass the click through to core
          * This is partly based on the core functionality in completion.js but is included here as otherwise clicks on
          * check boxes added dynamically after page load are not detected
-         * @param {number} section the course section number
          * @param {number} cmid the course module id
          * @param {bool} completed the new completion status
          */
@@ -210,7 +209,9 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                         parseInt(overallProgressIndicator.attr(dataKeys.numberComplete)) + 1,
                         overallProgressIndicator.attr(dataKeys.numberOutOf)
                     );
-                    setOverallProgressIndicator(newOverallProgressValue, parseInt(overallProgressIndicator.attr(dataKeys.numberOutOf)));
+                    setOverallProgressIndicator(
+                        newOverallProgressValue, parseInt(overallProgressIndicator.attr(dataKeys.numberOutOf))
+                    );
                 }
             }
             // Even if it is not a "complete on view" activity, clear UI storage so that when user returns it is correct.
@@ -234,10 +235,10 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
         /**
          * If we have called format_tiles_get_section_information then we need to add the result to the DOM.
          * @param {array} sections the section in
-         * * @param {number} overallcomplete how many activities complete in the section overall
-         * * @param {number}overalloutof how many activities in the section overall
+         * @param {number} overallcomplete how many activities complete in the section overall
+         * @param {number}overalloutof how many activities in the section overall
          */
-        const updateSectionsInfo  = function(sections, overallcomplete, overalloutof) {
+        const updateSectionsInfo = function(sections, overallcomplete, overalloutof) {
             sections.forEach(sec => {
                 const tile = $(Selector.tileId + sec.sectionnum);
                 // If this tile is now unrestricted / visible, give it the right classes.
@@ -372,7 +373,7 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                 }
             },
             updateSectionsInfo: function(sections, overallcomplete, overalloutof) {
-                updateSectionsInfo(sections,  overallcomplete, overalloutof);
+                updateSectionsInfo(sections, overallcomplete, overalloutof);
             }
         };
     }
