@@ -56,8 +56,6 @@ Feature: Progress indicators can be used to change progress status and changes a
       | assumedatastoreconsent | 1        | format_tiles |
       | reopenlastsection      | 0        | format_tiles |
       | usejavascriptnav       | 1        | format_tiles |
-      | jsmaxstoreditems       | 0        | format_tiles |
-    # We set jsmaxstoreditems to zero as otherwise when we switch between subtiles and tiles format we may not see an immediate change in display
 
   @javascript
   Scenario: Log in as student and check/uncheck activities - results correctly reach database

@@ -29,8 +29,6 @@ Feature: Section zero can be collapsed or expanded in tiles format
       | modalresources         | pdf,html | format_tiles |
       | assumedatastoreconsent | 1        | format_tiles |
       | reopenlastsection      | 0        | format_tiles |
-      | jsmaxstoreditems       | 0        | format_tiles |
-    # We set jsmaxstoreditems to zero as otherwise when we switch between subtiles and tiles format we may not see an immediate change in display
 
     And I log in as "student1"
     And I am on "Course 1" course homepage

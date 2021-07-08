@@ -574,9 +574,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
          * @param {number} courseId courseId the id of this course.
          * @param {object} thisTile jquery the tile object clicked.
          * @param {number} dataSection the id number of the tile.
-         * @param {number} storedContentExpirySecs
          */
-        var populateAndExpandSection = function(courseId, thisTile, dataSection, storedContentExpirySecs) {
+        var populateAndExpandSection = function(courseId, thisTile, dataSection) {
             setOverlay(dataSection);
             $(Selector.TILE).removeClass(ClassNames.SELECTED);
             thisTile.addClass(ClassNames.SELECTED);
@@ -602,60 +601,21 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             if (relatedContentArea.find(Selector.ACTIVITY).length > 0) {
                 // There is already some content on the screen so display immediately.
                 expandSection(relatedContentArea, dataSection);
-                // Then refresh the content in storage only but do not change on screen.
-                if (browserStorage.getStoredContentAge(courseId, dataSection) > storedContentExpirySecs
-                || !browserStorage.getStoredContentAge(courseId, dataSection)) {
-                    // If stored content is old, replace it.
-                    getSectionContentFromServer(courseId, dataSection).done(function (response) {
-                        if (browserStorage.storageEnabledSession()) {
-                            browserStorage.storeCourseContent(courseId, dataSection, $(response.html).html());
-                        }
-                    });
-                }
+
+                // Still contact the server in case content has changed (e.g. restrictions now satisfied).
+                getSectionContentFromServer(courseId, dataSection).done(function (response) {
+                    setCourseContentHTML(relatedContentArea, $(response.html).html());
+                });
             } else {
                 relatedContentArea.html(loadingIconHtml);
-                if (browserStorage.storageEnabledLocal()) {
-                    var contentAge = browserStorage.getStoredContentAge(courseId, dataSection);
-                    if (contentAge) {
-                        // We have some stored content so display it even if it's expired.
-                        setCourseContentHTML(
-                            relatedContentArea,
-                            browserStorage.getCourseContent(courseId, dataSection)
-                        );
-                        expandSection(relatedContentArea, dataSection);
-                    }
-                    if (!contentAge || contentAge > storedContentExpirySecs) {
-                        // Content in local storage may not exist or have expired.
-                        // If so, get it again from server and display new content on receipt.
-                        var loadingIcon = $(Selector.TILE_LOADING_ICON_ID + dataSection);
-                        if (loadingIcon !== undefined) {
-                            loadingIcon.html(loadingIconHtml).fadeIn(200);
-                        } else {
-                            loadingIcon = $("<div>").html(loadingIconHtml);
-                            relatedContentArea.html(loadingIcon);
-                        }
-                        getSectionContentFromServer(courseId, dataSection).done(function (response) {
-                            var contentToDisplay = $(response.html).html();
-                            setCourseContentHTML(relatedContentArea, contentToDisplay);
-                            expandSection(relatedContentArea, dataSection);
-                            if (browserStorage.storageEnabledSession()) {
-                                browserStorage.storeCourseContent(courseId, dataSection, contentToDisplay);
-                            }
-                        }).fail(function (failResult) {
-                            failedLoadSectionNotify(dataSection, failResult, relatedContentArea);
-                            cancelTileSelections(dataSection);
-                        });
-                    }
-                } else {
-                    // Not using storage so get from server.
-                    getSectionContentFromServer(courseId, dataSection).done(function (response) {
-                        setCourseContentHTML(relatedContentArea, $(response.html).html());
-                        expandSection(relatedContentArea, dataSection);
-                    }).fail(function (failResult) {
-                        failedLoadSectionNotify(dataSection, failResult, relatedContentArea);
-                        cancelTileSelections(dataSection);
-                    });
-                }
+                // Get from server.
+                getSectionContentFromServer(courseId, dataSection).done(function (response) {
+                    setCourseContentHTML(relatedContentArea, $(response.html).html());
+                    expandSection(relatedContentArea, dataSection);
+                }).fail(function (failResult) {
+                    failedLoadSectionNotify(dataSection, failResult, relatedContentArea);
+                    cancelTileSelections(dataSection);
+                });
             }
             browserStorage.setLastVisitedSection(dataSection);
         };
@@ -664,11 +624,8 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
             init: function (
                 courseIdInit,
                 useJavascriptNav, // Set by site admin see settings.php.
-                maxContentSectionsToStore, // Set by site admin see settings.php.
                 isMobileInit,
                 sectionNum,
-                storedContentExpirySecs, // Set by site admin see settings.php.
-                storedContentDeleteMins, // Set by site admin see settings.php.
                 useFilterButtons,
                 assumeDataStoreConsent, // Set by site admin see settings.php.
                 reopenLastSectionInit, // Set by site admin see settings.php.
@@ -685,13 +642,10 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                 assumeDataStoreConsent = assumeDataStoreConsent === "1";
                 enableCompletion = enableCompletionInit === "1";
                  // We want to initialise the browser storage JS module for storing user settings.
-                 // And (depending on maxContentSectionsToStore) possibly also content in browser.
                 browserStorage.init(
                     courseId,
-                    maxContentSectionsToStore,
                     false,
                     sectionNum,
-                    storedContentDeleteMins,
                     assumeDataStoreConsent,
                     userId
                 );
@@ -756,38 +710,18 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                                 cancelTileSelections(dataSection);
                                 browserStorage.setLastVisitedSection(0);
                             } else {
-                                populateAndExpandSection(
-                                    courseId, thisTile, dataSection, storedContentExpirySecs
-                                );
+                                populateAndExpandSection(courseId, thisTile, dataSection);
                             }
                             // Silently set the *next* section's content to if it exists and if user is not on mobile.
                             // short delay as more important to get current section content first (above).
                             var nextSecIfExists = $(Selector.SECTION_ID + (dataSection + 1));
                             if (!isMobile && !usingH5pFilter && nextSecIfExists.length && dataSection > 0) {
-                                setTimeout(function () {
-                                    var storedContentAge = browserStorage.getStoredContentAge(courseId, dataSection + 1);
-                                    if (storedContentAge) {
-                                        // We have some stored content so set this to screen (even if expired).
-                                        setCourseContentHTML(
-                                            nextSecIfExists,
-                                            browserStorage.getCourseContent(courseId, dataSection + 1)
-                                        );
-                                    }
-                                    if (!storedContentAge || storedContentAge > storedContentExpirySecs) {
-                                        // Stored content is too old or does not exist so get from server.
-                                        getSectionContentFromServer(courseId, dataSection + 1).done(function(response) {
-                                            setCourseContentHTML(
-                                                nextSecIfExists,
-                                                $(response.html).html()
-                                            );
-                                            if (browserStorage.storageEnabledSession()) {
-                                                browserStorage.storeCourseContent(
-                                                    courseId, dataSection + 1, $(response.html).html()
-                                                );
-                                            }
-                                        });
-                                    }
-                                }, 2000);
+                                getSectionContentFromServer(courseId, dataSection + 1).done(function(response) {
+                                    setCourseContentHTML(
+                                        nextSecIfExists,
+                                        $(response.html).html()
+                                    );
+                                });
                             }
                         });
 

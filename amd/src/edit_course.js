@@ -94,11 +94,8 @@ define(
             init: function(
                 courseIdInit,
                 useJavascriptNav, // Set by site admin see settings.php.
-                maxContentSectionsToStore, // Set by site admin see settings.php.
                 isMobile,
                 sectionNum,
-                storedContentExpirySecs, // Set by site admin see settings.php.
-                storedContentDeleteMins, // Set by site admin see settings.php.
                 useFilterButtons,
                 assumeDataStoreConsent, // Set by site admin see settings.php.
                 reopenLastSection, // Set by site admin see settings.php.
@@ -112,7 +109,6 @@ define(
                 areConvertingLabel,
                 documentationurl
             ) {
-
                 courseId = courseIdInit;
                 // Some args are strings or ints but we prefer bool.  Change to bool now as they are passed on elsewhere.
                 assumeDataStoreConsent = assumeDataStoreConsent === "1";
@@ -147,8 +143,6 @@ define(
                         browserStorageEdit.init(
                             userId,
                             courseId,
-                            maxContentSectionsToStore,
-                            storedContentDeleteMins,
                             assumeDataStoreConsent,
                             finalSectionInCourse,
                             collapsingAllSectionFromURL

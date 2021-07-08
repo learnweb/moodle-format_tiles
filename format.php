@@ -124,11 +124,8 @@ $usingh5pfilter = in_array('h5p', array_keys(filter_get_active_in_context($conte
 $jsparams = array(
     'courseId' => $course->id,
     'useJSNav' => $usejsnav, // See also lib.php page_set_course().
-    'jsMaxStoredItems' => get_config('format_tiles', 'jsmaxstoreditems'),
     'isMobile' => $ismobile,
     'jsSectionNum' => $jssectionnum,
-    'jsStoredConentExpirySecs' => get_config('format_tiles', 'jsstoredcontentexpirysecs'),
-    'jsStoredContentDeleteMins' => get_config('format_tiles', 'jsstoredcontentdeletemins'),
     'displayFilterBar' => $course->displayfilterbar,
     'assumeDataStoreContent' => get_config('format_tiles', 'assumedatastoreconsent'),
     'reOpenLastSection' => get_config('format_tiles', 'reopenlastsection'),
@@ -165,7 +162,6 @@ if ($isediting) {
         );
     }
 }
-
 // Now the modules which we want whether editing or not.
 
 // If we are allowing course modules to be displayed in modal windows when clicked.

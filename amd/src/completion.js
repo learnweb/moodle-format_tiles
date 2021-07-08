@@ -214,10 +214,6 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                     );
                 }
             }
-            // Even if it is not a "complete on view" activity, clear UI storage so that when user returns it is correct.
-            require(["format_tiles/browser_storage"], function (storage) {
-                storage.storeCourseContent(courseId, sectionNum, "");
-            });
         };
 
         /**
@@ -343,15 +339,6 @@ define(["jquery", "core/templates", "core/config", "core/ajax", "format_tiles/co
                             if (clickedActivity.hasClass("completeonview")) {
                                 markAsAutoCompleteInUI(clickedActivity);
                             }
-                        });
-                    $(Selector.pageContent)
-                        .on("click", Selector.completeonevent + ", " + Selector.completeonview, function (e) {
-                            // For items which are auto complete on view or event, but don't launch in a modal e.g. Quiz.
-                            // We just clear the UI storage so that when user returns to this page, new completion state shows.
-                            var sectionNum = $(e.currentTarget).closest(Selector.section).attr('data-section');
-                            require(["format_tiles/browser_storage"], function(storage) {
-                                storage.storeCourseContent(courseId, sectionNum, "");
-                            });
                         });
                 });
             },
