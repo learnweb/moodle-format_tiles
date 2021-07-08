@@ -248,6 +248,20 @@ define(["jquery", "core/templates", "core/ajax", "format_tiles/browser_storage",
                     });
                 }
 
+                if (typeof window.MathJax !== "undefined") {
+                    try {
+                        const mathJaxElems = contentArea.find('.filter_mathjaxloader_equation');
+                        if (mathJaxElems.length) {
+                            mathJaxElems.each((i, node) => {
+                                window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, node]);
+                            });
+                        }
+                    } catch (err) {
+                        require(["core/log"], function(log) {
+                            log.debug(err);
+                        });
+                    }
+                }
                 return true;
             }
             return false;
