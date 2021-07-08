@@ -382,7 +382,7 @@ $string['usejseditingexpandcollapse_desc'] = 'If selected, in editing mode a tea
 $string['usejsnavforsinglesection'] = 'Use JS navigation for single section page';
 $string['usejsnavforsinglesection_desc'] = 'When checked, any call for a single section page (&section=xx) will be handled using JavaScript, by launching the course main page, animated to open at the requested section via JS, rather than calling the old style PHP single section page';
 $string['usesubtilesseczero'] = 'Use sub tiles in top section';
-$string['usesubtilesseczero_help'] = 'If selected, sub tiles will be used in top section of course as well as within all tiles.  This is as the sub tiles take up a lot of room at the very top of the course.  It may be better to leave this unselected, so that any items in the top section are shown in standard list format instead.';
+$string['usesubtilesseczero_help'] = 'If selected, sub tiles will be used in top section of course as well as within all tiles.  Only available if using sub tiles in the course overall.  This is as the sub tiles take up a lot of room at the very top of the course.  It may be better to leave this unselected, so that any items in the top section are shown in standard list format instead.';
 $string['showprogresssphototiles_desc'] = 'If selected, student progress (e.g. Progress 2/5) will be shown on photo tiles';
 $string['privacy:metadata:preference:format_tiles_stopjsnav'] = 'Whether the user has disabled animated JavaScript navigation.';
 $string['usetooltips'] = 'Use JavaScript tooltips';

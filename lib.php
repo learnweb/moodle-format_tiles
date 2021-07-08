@@ -407,6 +407,10 @@ class format_tiles extends format_base {
                     'default' => 0,
                     'type' => PARAM_INT,
                 ),
+                'usesubtilesseczero' => array(
+                    'default' => 0,
+                    'type' => PARAM_INT
+                ),
                 'courseshowtileprogress' => array(
                     'default' => 0,
                     'type' => PARAM_INT,
@@ -414,10 +418,6 @@ class format_tiles extends format_base {
                 'displayfilterbar' => array(
                     'default' => 0,
                     'type' => PARAM_INT,
-                ),
-                'usesubtilesseczero' => array(
-                    'default' => 0,
-                    'type' => PARAM_INT
                 ),
                 'courseusebarforheadings' => array(
                     'default' => 1,
