@@ -255,3 +255,10 @@ Other
 =========================================
 - Improve wrapping of tile and sub-tile titles where long (incl new line break feature).
 - Improve section completion checks on completion change.
+
+3.11.0.1 (2020080617) (RELEASE CANDIDATE)
+=========================================
+- Add Mathjax support
+- Improve section completion checks on completion change.
+- Remove browser content storage (simplifies code, better for completion, fixes issue #31, fixes issue #69).
+- Fix minor course settings page issue re subtiles in section zero.
