@@ -402,4 +402,4 @@ $string['backupfailed'] = 'Backup failed';
 $string['restorefailed'] = 'Restore failed';
 $string['fixproblems'] = 'Fix problems';
 $string['enablelinebreakfilter'] = 'Enable line break filter';
-$string['enablelinebreakfilter_desc'] = 'Filter tile titles for the  {{#linebreak}} and, if present and the title title is long, replace it with "- " to allow line to break.  Otherwise replace it with nothing (i.e. no line break).';
+$string['enablelinebreakfilter_desc'] = 'Filter tile titles for the zero width space character <code>&amp;#8203;</code> and, if present and the title title is long, replace it with "- " to allow line to break.  Otherwise replace it with nothing (i.e. no line break).';

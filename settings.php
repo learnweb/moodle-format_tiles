@@ -241,8 +241,7 @@ if ($ADMIN->fulltree) {
     $page->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 
     $name = 'format_tiles/fittilestowidth';
-    $title = get_string('fittilestowidth', 'format_tiles')
-        . ' ' . get_string('experimentalsetting', 'format_tiles');
+    $title = get_string('fittilestowidth', 'format_tiles');
     $description = get_string('fittilestowidth_desc', 'format_tiles');
     $default = 1;
     $page->add(new admin_setting_configcheckbox($name, $title, $description, $default));
@@ -305,7 +304,7 @@ if ($ADMIN->fulltree) {
         'format_tiles/documentationurl',
         get_string('documentationurl', 'format_tiles'),
         get_string('documentationurl_descr', 'format_tiles'),
-        'http://evolutioncode.uk/tiles',
+        'https://evolutioncode.uk/tiles/docs',
         PARAM_RAW,
         50
     );
