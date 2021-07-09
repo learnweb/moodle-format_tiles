@@ -405,7 +405,7 @@ class format_tiles_external extends external_api
         $result = array('status' => false, 'warnings' => [], 'html' => '');
         $mod = get_fast_modinfo($params['courseid'])->get_cm($params['cmid']);
         require_capability('mod/' . $mod->modname . ':view', $modcontext);
-        if ($mod && $mod->available) {
+        if ($mod && $mod->uservisible) {
             if (array_search($mod->modname, explode(",", get_config('format_tiles', 'modalmodules'))) === false) {
                 throw new invalid_parameter_exception('Not allowed to call this mod type - disabled by site admin');
             }
