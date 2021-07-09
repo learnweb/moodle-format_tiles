@@ -262,3 +262,9 @@ Other
 - Improve section completion checks on completion change.
 - Remove browser content storage (simplifies code, better for completion, fixes issue #31, fixes issue #69).
 - Fix minor course settings page issue re subtiles in section zero.
+
+3.11.0.2 (2020080618) (RELEASE CANDIDATE)
+=========================================
+- Fix issue #52 scrolling after video new window
+- Fix issue #53 show page contents to users with editing rights
+- Amend lang strings

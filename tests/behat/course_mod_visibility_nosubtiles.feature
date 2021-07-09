@@ -71,7 +71,7 @@ Feature: In a section for Teacher, hidden activities are dimmed
     And I log out tiles
 
   @javascript
-  Scenario: Student can see visible (V) but not visible (NV) activities with subtiles off
+  Scenario: Student can see visible (V) but cannot see invisible (NV) activities with subtiles off
     When I log in as "student1"
     And I am on "Course Mod Vis NoSubtiles Course" course homepage
     And I click on tile "1"
