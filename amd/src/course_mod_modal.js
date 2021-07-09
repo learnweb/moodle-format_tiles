@@ -285,6 +285,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 // Important for video which may end up playing twice otherwise.
                 setTimeout(function() {
                     modalRoot.find(Selector.newWindowButton).click(function() {
+                        modalStore[modalRoot.attr("data-cmid")].hide();
                         modalStore[modalRoot.attr("data-cmid")] = undefined;
                         modalRoot.remove();
                         $(".modal-backdrop").not("#window-overlay").removeClass("show").addClass("hide");
