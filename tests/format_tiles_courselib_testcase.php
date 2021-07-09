@@ -663,6 +663,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         }
     }
 
+    /**
+     * @throws dml_exception
+     */
     public function test_create_course_with_generator() {
         global $DB;
         $this->resetAfterTest(true);
@@ -673,6 +676,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertTrue($sectioncreated);
     }
 
+    /**
+     * @throws moodle_exception
+     */
     public function test_create_course_sections() {
         global $DB;
         $this->resetAfterTest(true);
@@ -700,6 +706,11 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEquals(range(0, $numsections + 1), $sectionscreated);
     }
 
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     public function test_update_course() {
         global $DB;
 
@@ -747,6 +758,10 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         }
     }
 
+    /**
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     public function test_update_course_section_time_modified() {
         global $DB;
 
@@ -770,6 +785,10 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertGreaterThan($oldtimemodified, $newtimemodified);
     }
 
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_course_add_cm_to_section() {
         global $DB;
         $this->resetAfterTest(true);
@@ -821,6 +840,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEquals($cmids[3] . ',' . $cmids[2], $sequence);
     }
 
+    /**
+     * @throws dml_exception
+     */
     public function test_reorder_sections() {
         global $DB;
         $this->resetAfterTest(true);
@@ -859,6 +881,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertFalse($neworder);
     }
 
+    /**
+     * @throws dml_exception
+     */
     public function test_move_section_down() {
         global $DB;
         $this->resetAfterTest(true);
@@ -888,6 +913,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEquals($oldsections[6], $sections[6]);
     }
 
+    /**
+     * @throws dml_exception
+     */
     public function test_move_section_up() {
         global $DB;
         $this->resetAfterTest(true);
@@ -917,6 +945,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEquals($oldsections[6], $sections[4]);
     }
 
+    /**
+     * @throws dml_exception
+     */
     public function test_move_section_marker() {
         global $DB;
         $this->resetAfterTest(true);
@@ -959,6 +990,10 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEquals(3, $course->marker);
     }
 
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_course_can_delete_section() {
         global $DB;
         $this->resetAfterTest(true);
@@ -1000,6 +1035,10 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertFalse(course_can_delete_section($coursetiles, 1));
     }
 
+    /**
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     public function test_course_delete_section() {
         global $DB;
         $this->resetAfterTest(true);
@@ -1053,6 +1092,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertFalse(course_get_format($course)->is_section_current(1));
     }
 
+    /**
+     * test_get_course_display_name_for_list.
+     */
     public function test_get_course_display_name_for_list() {
         global $CFG;
         $this->resetAfterTest(true);
@@ -1066,6 +1108,10 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEquals('FROG101 Introduction to pond life', get_course_display_name_for_list($course));
     }
 
+    /**
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     public function test_move_module_in_course() {
         global $DB;
 
@@ -1128,6 +1174,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertTrue(in_array($cm->id, $newsequences));
     }
 
+    /**
+     * test_module_visibility.
+     */
     public function test_module_visibility() {
         $this->setAdminUser();
         $this->resetAfterTest(true);
@@ -1151,6 +1200,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         }
     }
 
+    /**
+     * test_section_visibility_events.
+     */
     public function test_section_visibility_events() {
         $this->setAdminUser();
         $this->resetAfterTest(true);
@@ -1177,6 +1229,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $sink->close();
     }
 
+    /**
+     * @throws moodle_exception
+     */
     public function test_section_visibility() {
         $this->setAdminUser();
         $this->resetAfterTest(true);
@@ -1281,6 +1336,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         }
     }
 
+    /**
+     * test_course_page_type_list.
+     */
     public function test_course_page_type_list() {
         global $DB;
         $this->resetAfterTest(true);
@@ -1333,6 +1391,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEquals($pagetypelist, $testpagetypelist1);
     }
 
+    /**
+     * test_compare_activities_by_time_desc.
+     */
     public function test_compare_activities_by_time_desc() {
 
         // Let's create some test data.
@@ -1377,6 +1438,9 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         }
     }
 
+    /**
+     * test_compare_activities_by_time_asc.
+     */
     public function test_compare_activities_by_time_asc() {
 
         // Let's create some test data.
@@ -3572,6 +3636,12 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEmpty($usersroles);
     }
 
+    /**
+     * @throws coding_exception
+     * @throws comment_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     public function test_course_check_module_updates_since() {
         global $CFG, $DB, $USER;
         require_once($CFG->dirroot . '/mod/glossary/lib.php');
@@ -3660,6 +3730,11 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertFalse($updates->outcomes->updated);
     }
 
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     public function test_async_module_deletion_hook_implemented() {
         // Async module deletion depends on the 'true' being returned by at least one plugin implementing the hook,
         // 'course_module_adhoc_deletion_recommended'. In core, is implemented by the course recyclebin, which will only return
@@ -3727,6 +3802,11 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEmpty($cmcount);
     }
 
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     public function test_async_module_deletion_hook_not_implemented() {
         // Only proceed if we are sure that no plugin is going to advocate async removal of a module. I.e. no plugin returns
         // 'true' from the 'course_module_adhoc_deletion_recommended' hook.
@@ -3782,6 +3862,11 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEmpty($cmcount);
     }
 
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     public function test_async_section_deletion_hook_implemented() {
         // Async section deletion (provided section contains modules), depends on the 'true' being returned by at least one plugin
         // implementing the 'course_module_adhoc_deletion_recommended' hook. In core, is implemented by the course recyclebin,
@@ -3870,6 +3955,10 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEquals(3, $count);
     }
 
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     public function test_async_section_deletion_hook_not_implemented() {
         // If no plugins advocate async removal, then normal synchronous removal will take place.
         // Only proceed if we are sure that no plugin is going to advocate async removal of a module. I.e. no plugin returns
@@ -3946,6 +4035,11 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEquals(2, $count);
     }
 
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     public function test_classify_course_for_timeline() {
         global $DB, $CFG;
 
