@@ -320,7 +320,7 @@ if ($ADMIN->fulltree) {
 
     $name = 'format_tiles/enablelinebreakfilter';
     $title = get_string('enablelinebreakfilter', 'format_tiles');
-    $description = get_string('enablelinebreakfilter_desc', 'format_tiles');
+    $description = get_string('enablelinebreakfilter_desc', 'format_tiles', '<code>&amp;#8288;</code>');
     $default = 0;
     $page->add(new admin_setting_configcheckbox($name, $title, $description, $default));
 

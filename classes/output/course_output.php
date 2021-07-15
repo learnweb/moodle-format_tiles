@@ -805,7 +805,7 @@ class course_output implements \renderable, \templatable
     }
 
     /**
-     * Allow user to insert a line break flag as '&#8203;' into very long tile titles.
+     * Watch for the word joiner character '&#8288;' in very long tile titles.
      * When encountered on a tile title, this char is changed to '- ' to allow the text to wrap.
      * This is useful on tiles with long words in the title (e.g. German language).
      * @param string $text
@@ -813,7 +813,7 @@ class course_output implements \renderable, \templatable
      * @return string
      */
     private function apply_linebreak_filter(string $text, $remove = false) {
-        $zerowidthspace = '&#8203;';
+        $zerowidthspace = '&#8288;';
         $maxwidthfortilechars = 15;
         if (!$remove && strlen($text) > $maxwidthfortilechars) {
             // If the title is long, we want to line break with a -, so replace the zero width space with hyphen space.
