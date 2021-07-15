@@ -747,7 +747,8 @@ body.jsenabled.format-tiles #collapsiblesec0 {
     display: inline-block;
     margin-bottom: 3px;
     min-height: 45px;
-    float: left;
+    position: absolute;
+    left: 0;
 }
 
 .format-tiles .overall-prog-radial {
