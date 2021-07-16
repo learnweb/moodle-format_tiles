@@ -415,7 +415,9 @@
 .format-tiles ul.tiles .tile.tile-hidden .format-tiles li .section .hidden .tile_bar {
     opacity: 0.5;
 }
-
+.format-tiles ul.tiles .tile:not(.tile-restricted) .tiletopright .fa-lock {
+    display: none;
+}
 .format-tiles ul.tiles .tile.tile-hidden:hover,
 .format-tiles ul.tiles .tile-restricted.tile-clickable:hover {
     opacity: 0.3;
