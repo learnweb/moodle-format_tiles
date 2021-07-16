@@ -87,6 +87,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_create_course_with_generator.
      * @throws dml_exception
      */
     public function test_create_course_with_generator() {
@@ -100,6 +101,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_create_course_sections.
      * @throws moodle_exception
      */
     public function test_create_course_sections() {
@@ -130,6 +132,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_update_course.
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
@@ -182,6 +185,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_update_course_section_time_modified.
      * @throws dml_exception
      * @throws moodle_exception
      */
@@ -209,6 +213,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_course_add_cm_to_section.
      * @throws coding_exception
      * @throws dml_exception
      */
@@ -264,6 +269,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_reorder_sections.
      * @throws dml_exception
      */
     public function test_reorder_sections() {
@@ -305,6 +311,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_move_section_down.
      * @throws dml_exception
      */
     public function test_move_section_down() {
@@ -337,6 +344,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_move_section_up.
      * @throws dml_exception
      */
     public function test_move_section_up() {
@@ -369,6 +377,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_move_section_marker.
      * @throws dml_exception
      */
     public function test_move_section_marker() {
@@ -414,6 +423,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_course_can_delete_section.
      * @throws coding_exception
      * @throws dml_exception
      */
@@ -459,6 +469,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_course_delete_section.
      * @throws dml_exception
      * @throws moodle_exception
      */
@@ -516,6 +527,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_move_module_in_course.
      * @throws dml_exception
      * @throws moodle_exception
      */
@@ -582,7 +594,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
-     * test_section_visibility_events.
+     * Test_section_visibility_events.
      */
     public function test_section_visibility_events() {
         $this->setAdminUser();
@@ -944,6 +956,10 @@ class format_tiles_courselib_testcase extends advanced_testcase {
         $this->assertEventContextNotUsed($event);
     }
 
+    /**
+     * Test_course_integrity_check.
+     * @throws dml_exception
+     */
     public function test_course_integrity_check() {
         global $DB;
 
@@ -1475,7 +1491,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
-     * test_course_enddate
+     * Test_course_enddate.
      *
      * @dataProvider course_enddate_provider
      * @param int $startdate
@@ -1536,7 +1552,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
 
 
     /**
-     * test_course_dates_reset
+     * Test_course_dates_reset.
      *
      * @dataProvider course_dates_reset_provider
      * @param int $startdate
@@ -1722,6 +1738,7 @@ class format_tiles_courselib_testcase extends advanced_testcase {
     }
 
     /**
+     * Test_course_check_module_updates_since.
      * @throws coding_exception
      * @throws comment_exception
      * @throws dml_exception
