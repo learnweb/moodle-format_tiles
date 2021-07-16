@@ -272,3 +272,9 @@ Other
 3.11.0.3 (2020080619) (RELEASE CANDIDATE)
 =========================================
 - Fix issue #79 remove old unnecessary core tests
+
+3.11.0.4 (2020080620) (RELEASE CANDIDATE)
+=========================================
+- Hide lock when tile becomes visible on completion change.
+- Change the line break filter character to &#8288; (word joiner character).
+- Fix minor issue with course module modal completion track button on launch.
