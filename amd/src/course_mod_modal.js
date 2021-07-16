@@ -52,7 +52,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             sectionMain: ".section.main",
             pageContent: "#page-content",
             regionMain: "#region-main",
-            completionState: "#completionstate_",
+            completionState: "#completion-check-",
             cmModalClose: ".embed_cm_modal .close",
             cmModal: ".embed_cm_modal",
             moodleMediaPlayer: ".mediaplugin_videojs",
@@ -66,7 +66,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
         };
 
         const CLASS = {
-            COMPLETION_MANUAL: "completeonmanual"
+            COMPLETION_MANUAL: "completeonmanual",
+            COMPLETION_AUTO: "completion-auto"
         };
 
         var LaunchModalDataActions = {
@@ -184,11 +185,11 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 // Render the modal header / title and set it to the page.
                 const checkBox = clickedCmObject.find(Selector.completioncheckbox);
                 if (checkBox.length !== 0) {
-                    templateData.completionstate = parseInt(checkBox.attr('data-state'));
-                    const inverseCompletionState = 1 - templateData.completionstate;
+                    templateData.completionstate = clickedCmObject.hasClass(CLASS.COMPLETION_AUTO)
+                        ? 1 : parseInt(checkBox.attr('data-completionstate'));
                     templateData.completionInUseForCm = 1;
-                    templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
-                    templateData.completionstateInverse = inverseCompletionState;
+                    templateData.completionicon = templateData.completionstate === 1 ? 'y' : 'n';
+                    templateData.completionstateInverse = 1 - templateData.completionstate;
                     templateData.completionIsManual = clickedCmObject.hasClass(CLASS.COMPLETION_MANUAL);
                     templateData.completionstring = checkBox.attr('title');
                     // Trigger event to check if other items in course have updated availability.
@@ -262,15 +263,15 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                     modalRoot.find(Selector.modalBody).addClass("text-center");
                 }).fail(Notification.exception);
                 // Render the modal header / title and set it to the page.
-                if (clickedCmObject.find(Selector.completioncheckbox).length !== 0) {
-                    var inverseCompletionState = parseInt(
-                        $(Selector.completionState + cmid).attr("value")
-                    );
+                const checkBox = clickedCmObject.find(Selector.completioncheckbox);
+                if (checkBox.length !== 0) {
+                    templateData.completionstate = clickedCmObject.hasClass(CLASS.COMPLETION_AUTO)
+                        ? 1 : parseInt(checkBox.attr('data-completionstate'));
                     templateData.completionInUseForCm = 1;
-                    templateData.completionstate = 1 - inverseCompletionState;
-                    templateData.completionicon = inverseCompletionState === 1 ? 'n' : 'y';
-                    templateData.completionstateInverse = inverseCompletionState;
+                    templateData.completionicon = templateData.completionstate === 1 ? 'y' : 'n';
+                    templateData.completionstateInverse = 1 - templateData.completionstate;
                     templateData.completionIsManual = clickedCmObject.hasClass(CLASS.COMPLETION_MANUAL);
+                    templateData.completionstring = checkBox.attr('title');
                     // Trigger event to check if other items in course have updated availability.
                     require(["format_tiles/completion"], function (completion) {
                         completion.triggerCompletionChangedEvent(sectionNum);
@@ -388,20 +389,19 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         tileid: sectionNum,
                         content: response.html
                     };
-                    if (clickedCmObject.find(Selector.completioncheckbox).length !== 0) {
-                        var inverseCompletionState = parseInt(
-                            $(Selector.completionState + cmid).attr("value")
-                        );
+                    const checkBox = clickedCmObject.find(Selector.completioncheckbox);
+                    if (checkBox.length !== 0) {
+                        templateData.completionstate = clickedCmObject.hasClass(CLASS.COMPLETION_AUTO)
+                            ? 1 : parseInt(checkBox.attr('data-completionstate'));
                         templateData.completionInUseForCm = 1;
-                        templateData.completionstate = 1 - inverseCompletionState;
-                        templateData.completionstateInverse = inverseCompletionState;
+                        templateData.completionicon = templateData.completionstate === 1 ? 'y' : 'n';
+                        templateData.completionstateInverse = 1 - templateData.completionstate;
                         templateData.completionIsManual = clickedCmObject.hasClass(CLASS.COMPLETION_MANUAL);
+                        templateData.completionstring = checkBox.attr('title');
                         // Trigger event to check if other items in course have updated availability.
                         require(["format_tiles/completion"], function (completion) {
                             completion.triggerCompletionChangedEvent(sectionNum);
                         });
-                    } else {
-                        templateData.completionInUseForCm = 0;
                     }
                     modal.setBody(templateData.content);
                     Templates.render("format_tiles/embed_module_modal_header_btns", templateData).done(function (html) {

@@ -1527,6 +1527,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     width: 30px;
     padding-left: 0;
     display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 35px;
 }
 .format-tiles .completioncheckbox.completion-auto {
     opacity: 0.6;
@@ -1547,6 +1550,16 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     text-align: center;
     box-shadow: none;
 }
+.format-tiles .embed_cm_modal .embed_file_button.button_download {
+    position: absolute;
+    right: 70px;
+    padding-top: 5px;
+}
+.format-tiles .embed_cm_modal .embed_file_button.button_expand {
+    position: absolute;
+    right: 105px;
+    padding-top: 5px;
+}
 .format-tiles .modal-container .modal .modal-header button.close {
     font-size: 1.8em;
     background-repeat: no-repeat;
@@ -1563,8 +1576,9 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     min-width: 125px;
     text-align: right;
     top: 0;
-    position: absolute;
+    position: relative;
     right: 0;
+    vertical-align: top;
 }
 .format-tiles .embed-module-buttons button.close {
     width: 28px;
@@ -1595,11 +1609,6 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 .format-tiles .embed-module-buttons a .icon {
     color: #fff;
-}
-.format-tiles .embed_cm_modal .embed-module-buttons form {
-    width: 28px;
-    height: 28px;
-    display: inline-block;
 }
 .format-tiles .embed_cm_modal .embed-module-buttons .completioncheckbox .icon {
     padding: 0;
