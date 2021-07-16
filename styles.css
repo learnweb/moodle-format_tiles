@@ -785,8 +785,8 @@ body.jsenabled.format-tiles #collapsiblesec0 {
 }
 .format-tiles li.activity .completion-icon {
     position: absolute;
-    left: 3px;
-    top: 3px;
+    left: 0;
+    top: 0;
 }
 .format-tiles .completion-icon.completion-icon-fail {
     background-image: url([[pix:format_tiles|completion-fail]]);
@@ -1516,6 +1516,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
     height: 30px;
     width: 30px;
     padding-left: 4px;
+    position: relative;
 }
 .format-tiles .completioncheckbox:focus {
     outline: none;
@@ -1529,7 +1530,7 @@ allow tiles to be taller and thinner so can fit two side by side in portrait on 
 }
 .format-tiles .completioncheckbox.completion-auto {
     opacity: 0.6;
-    height: 20px;
+    height: 30px;
 }
 .format-tiles .embed_cm_modal .embed_file_button,
 .format-tiles .modal-container .modal .modal-header button.close {
