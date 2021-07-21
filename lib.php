@@ -48,7 +48,7 @@ class format_tiles extends format_base {
      * This includes plugins like mod_customlabel and mod_unilabel, as defined here.
      * @var []
      */
-    public $labellikecoursemods = ['label', 'customlabel', 'unilabel'];
+    public $labellikecoursemods = ['label', 'customlabel', 'unilabel', 'datalynxcoursepage'];
 
     /**
      * Creates a new instance of class
