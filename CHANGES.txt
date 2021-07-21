@@ -245,7 +245,7 @@ Other
 - Fix issue #61, issue #75, issue #78 (completion no updating or not updating restrictions).
 - Fix issue #70 escape chars in mod title.
 - Fix issue 74 typo in image upload guidance.
-- Fixe issue #67 LTI to open in new window.
+- Fix issue #67 LTI to open in new window.
 - Fix issue #50 PDF view log on mobile.
 - Fix incorrect lang string.
 - Fix issue #77 page description image not displaying.

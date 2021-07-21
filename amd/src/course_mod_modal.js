@@ -62,7 +62,8 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             URLACTIVITYPOPUPLINK: ".activity.modtype_url.urlpopup a",
             newWindowButton: ".button_expand",
             modalHeader: ".modal-header",
-            embedModuleButtons: ".embed-module-buttons"
+            embedModuleButtons: ".embed-module-buttons",
+            iframe: "iframe"
         };
 
         const CLASS = {
@@ -85,10 +86,10 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
          * @param {object} modal the modal which contains the video.
          */
         var stopAllVideosOnDismiss = function(modal) {
-            var iframes = modal.find("iframe");
+            var iframes = modal.find(Selector.iframe);
             if (iframes.length > 0) {
                 modal.find(Selector.closeBtn).click(function(e) {
-                    $(e.currentTarget).closest(Selector.cmModal).find("iframe").each(function (index, iframe) {
+                    $(e.currentTarget).closest(Selector.cmModal).find(Selector.iframe).each(function (index, iframe) {
                         iframe = $(iframe);
                         iframe.attr('src', iframe.attr("src"));
                     });
@@ -298,6 +299,10 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
             return false;
         };
 
+        /**
+         * Resize the modal to account for its content.
+         * @param {object} modalRoot
+         */
         var resizeModal = function(modalRoot) {
             modalRoot.find(Selector.modal).animate({"max-width": modalMinWidth()}, "fast");
 
@@ -313,9 +318,9 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 stopAllVideosOnDismiss(modalRoot);
             }
 
-            // If the activity contains an iframe (e.g. is a page with a YouTube video in it), ensure modal is big enough.
+            // If the activity contains an iframe (e.g. is a page with a YouTube video in it, or H5P), ensure modal is big enough.
             // Do this for every iframe in the course module.
-            modalRoot.find("iframe").each(function (index, iframe) {
+            modalRoot.find(Selector.iframe).each(function (index, iframe) {
 
                 // Get the modal.
                 var modal;
@@ -344,10 +349,33 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                 var iframeHeight = Math.min($(iframe).height(), win.height());
                 var modalBody = modalRoot.find(Selector.modalBody);
                 if (iframeHeight > modalBody.height() - MODAL_MARGIN) {
-                    modalBody.animate({"min-height": Math.min(iframeHeight + MODAL_MARGIN, win.height())}, "fast");
+                    modalBody.animate({"min-height": Math.min(iframeHeight + MODAL_MARGIN, win.height()) + 1}, "fast");
                 }
                 stopAllVideosOnDismiss(modalRoot);
             });
+        };
+
+        /**
+         * Check the modal height to see if the iframe in it is bigger.  If it is, adjust modal height up.
+         * Do this a few times so that, if iframe content is loading, we can check after it's loaded.
+         * @param {object} modalRoot
+         * @param {number} howManyChecks
+         * @param {number}duration
+         * @param {number} oldHeight
+         */
+        const modalHeightChangeWatcher = function (modalRoot, howManyChecks, duration, oldHeight = 0) {
+            const iframe = modalRoot.find(Selector.modalBody);
+            if (iframe) {
+                const newHeight = Math.round(iframe.height());
+                if (newHeight && newHeight > oldHeight + 10) {
+                    resizeModal(modalRoot);
+                }
+                if (howManyChecks > 0) {
+                    setTimeout(() => {
+                        modalHeightChangeWatcher(modalRoot, howManyChecks - 1, duration, newHeight);
+                    }, duration);
+                }
+            }
         };
 
         // TODO refactor these to avoid repetition.
@@ -409,7 +437,11 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
                         modalRoot.find(Selector.closeBtn).detach().appendTo(modalRoot.find(Selector.embedModuleButtons));
                     }).fail(Notification.exception);
 
-                    resizeModal(modalRoot);
+                    // Allow a short delay before we resize the modal, and check a few times, as content may be loading.
+                    setTimeout(() => {
+                        modalHeightChangeWatcher(modalRoot, 5, 1000);
+                    }, 500);
+
 
                     return true;
                 }).fail(function(ex) {
