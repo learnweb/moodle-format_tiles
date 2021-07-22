@@ -278,3 +278,8 @@ Other
 - Hide lock when tile becomes visible on completion change.
 - Change the line break filter character to &#8288; (word joiner character).
 - Fix minor issue with course module modal completion track button on launch.
+
+3.11.0.5 (2020080621) (RELEASE CANDIDATE)
+=========================================
+- Fix issue with H5P modal being too small sometimes
+- Fix issue 65 Add mod datalynxcoursepage to $labellikecoursemods

@@ -439,7 +439,7 @@ define(["jquery", "core/modal_factory", "core/config", "core/templates", "core/n
 
                     // Allow a short delay before we resize the modal, and check a few times, as content may be loading.
                     setTimeout(() => {
-                        modalHeightChangeWatcher(modalRoot, 5, 1000);
+                        modalHeightChangeWatcher(modalRoot, 3, 1000);
                     }, 500);
 
 
