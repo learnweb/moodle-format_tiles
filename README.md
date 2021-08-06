@@ -1,6 +1,6 @@
 #Tiles Course Format
 
-###Author: David Watson http://evolutioncode.uk
+###Author: David Watson https://bitbucket.org/dw8/moodle-format_tiles/wiki/Home
 
 This is the "Tiles" course format plugin for Moodle.
 
